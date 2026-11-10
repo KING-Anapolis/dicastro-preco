@@ -27,7 +27,7 @@ unit uAtualiza;
 interface
 
 const
-  APP_VERSAO = '3.0.0';
+  APP_VERSAO = '3.0.1';
   REPO_PADRAO = 'KING-Anapolis/dicastro-preco';
 
 var
