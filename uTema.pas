@@ -73,7 +73,7 @@ procedure PreencherColunas(AGrade: TCustomDBGrid; const ACampos: String);
 implementation
 
 uses
-  Buttons, uMetaDarkStyle, uDarkStyleSchemes;
+  Buttons, uMetaDarkStyle, uDarkStyleSchemes, uWin32WidgetSetDark;
 
 const
   FONTE_PADRAO = 'Segoe UI';
@@ -861,8 +861,11 @@ var
 begin
   TemaEscuro := not TemaEscuro;
   DefinirPaleta;
-  if TemaEscuro then ApplyMetaDarkStyle(DefaultDark)
-  else ApplyMetaDarkStyle(DefaultWhite);
+  { ApplyMetaDarkStyle so pode rodar UMA vez (ja roda no .lpr): chama-la de
+    novo registra classes e ganchos em duplicidade e derruba o programa.
+    Em tempo de execucao so se troca o esquema de cores. }
+  if TemaEscuro then SetColorsScheme(DefaultDark)
+  else SetColorsScheme(DefaultWhite);
   if TemaEscuro then
     PGravaINI('DICASTRO', 'TEMA', 'ESCURO')
   else

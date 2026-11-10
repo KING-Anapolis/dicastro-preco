@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-Buttons, ColorSpeedButton, FileUtil, uFuncoes, uVar, uDm, uFrmMain;
+Buttons, ColorSpeedButton, FileUtil, uFuncoes, uVar, uDm, uFrmMain, uAtualiza;
 
 type
 
@@ -61,6 +61,9 @@ end;
 
 procedure Tfrm_login.FormShow(Sender: TObject);
 begin
+  { Versão sempre igual à do executável (APP_VERSAO em uAtualiza). }
+  Label2.Caption := 'Desenvolvido por Borges - www.borgis.com.br' + LineEnding +
+    'Versão ' + APP_VERSAO;
   if not FileExists(IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0))) + 'fbclient.dll') then
   begin
     GravaLog('Arquivo fbclient.dll não encontrado na pasta da aplicação.', 'ERRO');
