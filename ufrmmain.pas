@@ -1897,7 +1897,6 @@ begin
   begin
     Key := 0;
     AlternarTema;
-    ModernizarInterface;
     Exit;
   end;
 

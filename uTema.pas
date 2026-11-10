@@ -73,7 +73,7 @@ procedure PreencherColunas(AGrade: TCustomDBGrid; const ACampos: String);
 implementation
 
 uses
-  Buttons, uMetaDarkStyle, uDarkStyleSchemes, uWin32WidgetSetDark;
+  Buttons, uMetaDarkStyle, uDarkStyleSchemes, uWin32WidgetSetDark, uInstancia;
 
 const
   FONTE_PADRAO = 'Segoe UI';
@@ -856,22 +856,18 @@ begin
 end;
 
 procedure AlternarTema;
-var
-  I: Integer;
 begin
+  { O componente de dark mode so configura barras de rolagem, bordas e abas
+    na criacao das janelas; trocar com o sistema aberto deixa partes escuras
+    no tema claro. Por isso grava a escolha e reabre o programa (sem pedir
+    login novamente). }
   TemaEscuro := not TemaEscuro;
-  DefinirPaleta;
-  { ApplyMetaDarkStyle so pode rodar UMA vez (ja roda no .lpr): chama-la de
-    novo registra classes e ganchos em duplicidade e derruba o programa.
-    Em tempo de execucao so se troca o esquema de cores. }
-  if TemaEscuro then SetColorsScheme(DefaultDark)
-  else SetColorsScheme(DefaultWhite);
   if TemaEscuro then
     PGravaINI('DICASTRO', 'TEMA', 'ESCURO')
   else
     PGravaINI('DICASTRO', 'TEMA', 'CLARO');
-  for I := 0 to Screen.FormCount - 1 do
-    AplicarTema(Screen.Forms[I]);
+  ReiniciarAplicacao;
+  Application.Terminate;
 end;
 
 end.

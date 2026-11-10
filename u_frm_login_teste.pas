@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-Buttons, ColorSpeedButton, FileUtil, uFuncoes, uVar, uDm, uFrmMain, uAtualiza;
+Buttons, ColorSpeedButton, FileUtil, uFuncoes, uVar, uDm, uFrmMain, uAtualiza, uInstancia;
 
 type
 
@@ -39,6 +39,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure lb_sairClick(Sender: TObject);
   private
+    procedure AutoFechar(Data: PtrInt);
 
   public
 
@@ -111,6 +112,20 @@ begin
     end;
 
   GravaLog('App iniciado com sucesso','INFO');
+
+  { Reabertura pedida pelo proprio programa (troca de tema): segue sem login. }
+  if ReaberturaValida then
+  begin
+    LoginConcluido := True;
+    AlphaBlend := True;
+    AlphaBlendValue := 0;
+    Application.QueueAsyncCall(@AutoFechar, 0);
+  end;
+end;
+
+procedure Tfrm_login.AutoFechar(Data: PtrInt);
+begin
+  Close;
 end;
 
 procedure Tfrm_login.btn_sairClick(Sender: TObject);
@@ -143,6 +158,7 @@ begin
     );
   Exit;
   end;
+  LoginConcluido := True;
   Self.Close;
 end;
 

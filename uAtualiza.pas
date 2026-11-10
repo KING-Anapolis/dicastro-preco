@@ -36,14 +36,18 @@ var
 
 procedure IniciarAtualizacaoAutomatica;
 
+{ Agenda o pop-up de novidades (so aparece se o sistema acabou de ser
+  atualizado). Chamar logo antes de Application.Run, depois do login. }
+procedure AgendarNovidades;
+
 implementation
 
 uses
-  Classes, SysUtils, Math, Process, IniFiles, fpjson, jsonparser, Forms, Controls,
+  Classes, SysUtils, Math, ExtCtrls, Process, IniFiles, fpjson, jsonparser, Forms, Controls,
   Graphics, LCLType, LCLIntf, uFuncoes, uTema;
 
 type
-  TModoPop = (mpProgresso, mpSucesso, mpAviso, mpErro);
+  TModoPop = (mpProgresso, mpSucesso, mpAviso, mpErro, mpNovidades);
 
   { Pop-up moderno desenhado em codigo (cantos arredondados, tema claro/escuro). }
   TPopAtualiza = class(TForm)
@@ -176,6 +180,12 @@ begin
     if S <> '' then FSuporte.Add('E-mail: ' + S);
   end;
 
+  if AModo = mpNovidades then
+  begin
+    FSuporte.Text := ADetalhe;
+    FDetalhe := '';
+  end;
+
   BorderStyle := bsNone;
   Position := poScreenCenter;
   FormStyle := fsStayOnTop;
@@ -187,6 +197,7 @@ begin
   Width := Esc(480);
   case AModo of
     mpProgresso: Height := Esc(190);
+    mpNovidades: Height := Esc(100) + FSuporte.Count * Esc(28) + Esc(84);
     mpErro:
     begin
       Linhas := FSuporte.Count;
@@ -276,6 +287,7 @@ var
   R, Tr: TRect;
   X, Y, Larg: Integer;
   I: Integer;
+  Est: array[0..9] of TPoint;
   Estilo: TTextStyle;
   Txt: string;
 begin
@@ -306,6 +318,19 @@ begin
   C.Pen.EndCap := pecRound;
   C.Pen.JoinStyle := pjsRound;
   case FModo of
+    mpNovidades:
+    begin
+      { estrela de 5 pontas }
+      C.Brush.Color := Acc;
+      C.Pen.Width := 1;
+      for I := 0 to 9 do
+      begin
+        if Odd(I) then Larg := Esc(8) else Larg := Esc(13);
+        Est[I] := Point(X + Esc(22) + Round(Larg * Sin(I * Pi / 5)),
+          Y + Esc(23) - Round(Larg * Cos(I * Pi / 5)));
+      end;
+      C.Polygon(Est);
+    end;
     mpSucesso:
       C.Polyline([Point(X + Esc(12), Y + Esc(23)), Point(X + Esc(19), Y + Esc(30)),
         Point(X + Esc(32), Y + Esc(15))]);
@@ -392,6 +417,29 @@ begin
         C.Font.Color := Paleta.TextoSuave;
         Tr := Rect(Esc(28), Y, Width - Esc(28), Y + Esc(34));
         C.TextRect(Tr, Tr.Left, Tr.Top, 'Detalhe técnico: ' + FDetalhe, Estilo);
+      end;
+    end;
+
+    if FModo = mpNovidades then
+    begin
+      C.Font.Size := 10;
+      for I := 0 to FSuporte.Count - 1 do
+      begin
+        Y := Esc(100) + I * Esc(28);
+        C.Brush.Style := bsSolid;
+        C.Brush.Color := MisturarCor(Acc, Paleta.Superficie, 18);
+        C.Pen.Style := psClear;
+        C.Ellipse(Esc(28), Y, Esc(28) + Esc(20), Y + Esc(20));
+        C.Pen.Style := psSolid;
+        C.Pen.Color := Acc;
+        C.Pen.Width := Esc(2);
+        C.Polyline([Point(Esc(33), Y + Esc(10)), Point(Esc(36), Y + Esc(13)),
+          Point(Esc(42), Y + Esc(7))]);
+        C.Pen.Width := 1;
+        C.Brush.Style := bsClear;
+        C.Font.Style := [];
+        C.Font.Color := Paleta.Texto;
+        C.TextOut(Esc(58), Y + Esc(1), FSuporte[I]);
       end;
     end;
 
@@ -688,29 +736,102 @@ end;
 
 { ------------------------------------------------------------ Entrada ---- }
 
-procedure AvisarSeAtualizou;
+{ Novidades exibidas depois do login na primeira abertura de cada versao.
+  A CADA RELEASE: edite esta lista com o que mudou (uma linha por item). }
+function NovidadesDaVersao: string;
+begin
+  Result :=
+    'Reformulação de layout' + LineEnding +
+    'Temas claro e escuro' + LineEnding +
+    'Módulo de sugestão de compra' + LineEnding +
+    'Atualizações automáticas em versões novas' + LineEnding +
+    'Markup no histórico de vendas por produto';
+end;
+
+var
+  NovidadesPendentes: Boolean = False;
+
+{ Compara a versao gravada no INI com a do executavel. Se mudou (ou e a
+  primeira vez), as novidades serao mostradas apos o login. }
+procedure DetectarAtualizacao;
 var
   Ini: TIniFile;
-  Anterior: string;
 begin
   try
     Ini := TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'conf.ini');
     try
-      Anterior := Trim(Ini.ReadString('ATUALIZACAO', 'VERSAO_INSTALADA', ''));
-      if Anterior = APP_VERSAO then
-        Exit;
+      NovidadesPendentes :=
+        Trim(Ini.ReadString('ATUALIZACAO', 'VERSAO_INSTALADA', '')) <> APP_VERSAO;
+    finally
+      Ini.Free;
+    end;
+  except
+    NovidadesPendentes := False;
+  end;
+end;
+
+type
+  TAgendaNovidades = class
+  private
+    FTimer: TTimer;
+    procedure Tick(Sender: TObject);
+  public
+    procedure Iniciar;
+    procedure Disparar(Data: PtrInt);
+  end;
+
+{ Espera a tela principal aparecer para so entao mostrar o pop-up. }
+procedure TAgendaNovidades.Iniciar;
+begin
+  FTimer := TTimer.Create(nil);
+  FTimer.Interval := 300;
+  FTimer.OnTimer := @Tick;
+end;
+
+procedure TAgendaNovidades.Tick(Sender: TObject);
+begin
+  if (Application.MainForm <> nil) and Application.MainForm.Visible and
+     Application.MainForm.HandleAllocated then
+  begin
+    FTimer.Enabled := False;
+    Disparar(0);
+  end;
+end;
+
+procedure TAgendaNovidades.Disparar(Data: PtrInt);
+var
+  Ini: TIniFile;
+begin
+  if not NovidadesPendentes then Exit;
+  { garante a tela principal na frente antes do pop-up }
+  if Application.MainForm <> nil then
+  begin
+    Application.MainForm.BringToFront;
+    LCLIntf.SetForegroundWindow(Application.MainForm.Handle);
+  end;
+  NovidadesPendentes := False;
+  { grava antes de mostrar: se algo falhar, nao repete a cada abertura }
+  try
+    Ini := TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'conf.ini');
+    try
       Ini.WriteString('ATUALIZACAO', 'VERSAO_INSTALADA', APP_VERSAO);
     finally
       Ini.Free;
     end;
   except
-    Exit;
   end;
-  { Primeira execucao desta instalacao (sem versão anterior): não e atualização. }
-  if Anterior <> '' then
-    MostrarPop(mpSucesso, 'Sistema atualizado',
-      'O sistema foi atualizado para a versão ' + APP_VERSAO +
-      '.');
+  MostrarPop(mpNovidades, 'Novidades da versão ' + APP_VERSAO,
+    'Confira o que há de novo nesta atualização:', NovidadesDaVersao);
+end;
+
+var
+  Agenda: TAgendaNovidades;
+
+procedure AgendarNovidades;
+begin
+  if not NovidadesPendentes then Exit;
+  if Agenda = nil then Agenda := TAgendaNovidades.Create;
+  Agenda.Iniciar;
 end;
 
 procedure IniciarAtualizacaoAutomatica;
@@ -719,7 +840,7 @@ begin
   { remove sobras de uma troca ja concluida }
   if not FileExists(ExtractFilePath(ParamStr(0)) + 'atualiza.cmd') then
     DeleteFile(ExtractFilePath(ParamStr(0)) + 'atualiza.baixando.tmp');
-  AvisarSeAtualizou;
+  DetectarAtualizacao;
   TAtualizaThread.Create.Start;
 end;
 

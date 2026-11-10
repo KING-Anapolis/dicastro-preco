@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Spin, uFuncoes;
+  Spin, ColorSpeedButton, LCLIntf, uFuncoes, uTema;
 
 type
 
@@ -23,10 +23,13 @@ type
     Panel3: TPanel;
     SpinEdit1: TSpinEdit;
     SpinEdit2: TSpinEdit;
+    procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure Label2Click(Sender: TObject);
     procedure Panel3Click(Sender: TObject);
   private
+    FBtnSalvar: TColorSpeedButton;
+    procedure Modernizar;
 
   public
 
@@ -65,8 +68,32 @@ begin
     Self.Close;
 end;
 
+procedure TfrmConf.FormCreate(Sender: TObject);
+begin
+  Modernizar;
+end;
+
+{ Visual moderno: cantos arredondados e botao Salvar arredondado no tema. }
+procedure TfrmConf.Modernizar;
+begin
+  if FBtnSalvar = nil then
+  begin
+    FBtnSalvar := TColorSpeedButton.Create(Self);
+    FBtnSalvar.Parent := Panel1;
+    FBtnSalvar.SetBounds(Panel3.Left - 8, Panel3.Top, Panel3.Width + 8, Panel3.Height);
+    FBtnSalvar.Caption := 'SALVAR (F12)';
+    FBtnSalvar.Font.Style := [fsBold];
+    FBtnSalvar.Cursor := crHandPoint;
+    FBtnSalvar.OnClick := @Panel3Click;
+    Panel3.Visible := False;
+  end;
+  AplicarTema(Self);
+end;
+
 procedure TfrmConf.FormShow(Sender: TObject);
 begin
+  SetWindowRgn(Handle, CreateRoundRectRgn(0, 0, Width + 1, Height + 1, 20, 20), True);
+  AplicarTema(Self);
       SpinEdit1.Value :=
       StrToIntDef(
         PLerINI(

@@ -8,6 +8,7 @@ object frmConf: TfrmConf
   ClientHeight = 240
   ClientWidth = 320
   Color = 13001728
+  OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
   object Panel1: TPanel

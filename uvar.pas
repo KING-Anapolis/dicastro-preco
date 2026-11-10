@@ -13,6 +13,8 @@ type
 end;
 
   var Variaveis: TVariaveis;
+  { True somente depois de um login valido (evita abrir o sistema ao fechar o login). }
+  var LoginConcluido: Boolean = False;
 
 procedure CarregaVariaveis;
 
