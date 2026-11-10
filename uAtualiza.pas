@@ -6,7 +6,7 @@ unit uAtualiza;
    1. Em segundo plano consulta  https://api.github.com/repos/<REPO>/releases/latest
       (sem internet / sem release: segue em silencio, so grava log).
    2. Se a tag (ex.: v3.1.0) for maior que APP_VERSAO, mostra um pop-up com
-      barra de progresso e baixa o asset "dicastro.exe" para dicastro.novo.exe.
+      barra de progresso e baixa o primeiro asset .exe da release para atualiza.novo.exe.
    3. Um .cmd espera o programa fechar, troca o exe e (se o sistema principal
       ainda não abriu) reabre o programa ja atualizado. Se o usuario ja estiver
       trabalhando, nada e interrompido: a troca ocorre quando ele fechar.
@@ -102,9 +102,9 @@ begin
     try
       Chave('REPO', '');
       Chave('ATIVO', 'S');
-      Chave('SUPORTE_NOME', '');
-      Chave('SUPORTE_FONE', '');
-      Chave('SUPORTE_EMAIL', '');
+      Chave('SUPORTE_NOME', 'King Tecnologia');
+      Chave('SUPORTE_FONE', '62 9447-9690');
+      Chave('SUPORTE_EMAIL', 'borgesv770@gmail.com');
       Chave('VERSAO_INSTALADA', '');
     finally
       Ini.Free;
@@ -167,11 +167,11 @@ begin
   if AModo = mpErro then
   begin
     FSuporte.Add('Fale com o suporte do sistema:');
-    S := PLerINI('ATUALIZACAO', 'SUPORTE_NOME', '');
+    S := PLerINI('ATUALIZACAO', 'SUPORTE_NOME', 'King Tecnologia');
     if S <> '' then FSuporte.Add(S);
-    S := PLerINI('ATUALIZACAO', 'SUPORTE_FONE', '');
+    S := PLerINI('ATUALIZACAO', 'SUPORTE_FONE', '62 9447-9690');
     if S <> '' then FSuporte.Add('Telefone / WhatsApp: ' + S);
-    S := PLerINI('ATUALIZACAO', 'SUPORTE_EMAIL', '');
+    S := PLerINI('ATUALIZACAO', 'SUPORTE_EMAIL', 'borgesv770@gmail.com');
     if S <> '' then FSuporte.Add('E-mail: ' + S);
   end;
 
@@ -487,17 +487,17 @@ begin
       Exit;
 
     Dir := ExtractFilePath(ParamStr(0));
-    Tmp := Dir + 'dicastro.baixando.tmp';
-    FNovoExe := Dir + 'dicastro.novo.exe';
+    Tmp := Dir + 'atualiza.baixando.tmp';
+    FNovoExe := Dir + 'atualiza.novo.exe';
 
     { Troca ja agendada (outra instancia aberta): não mexe em nada. }
-    if FileExists(Dir + 'dicastro_atualiza.cmd') then
+    if FileExists(Dir + 'atualiza.cmd') then
       Exit;
     if FileExists(FNovoExe) then
       DeleteFile(FNovoExe);
 
     if not RunCommand(CaminhoCurl, ['-s', '-L', '--max-time', '15',
-      '-H', 'User-Agent: dicastro-updater',
+      '-H', 'User-Agent: updater',
       '-H', 'Accept: application/vnd.github+json',
       'https://api.github.com/repos/' + Repo + '/releases/latest'],
       Saida, [poNoConsole]) then
@@ -515,7 +515,7 @@ begin
       Assets := TJSONObject(J).Get('assets', TJSONArray(nil));
       if Assets <> nil then
         for I := 0 to Assets.Count - 1 do
-          if SameText(Assets.Objects[I].Get('name', ''), 'dicastro.exe') then
+          if LowerCase(ExtractFileExt(Assets.Objects[I].Get('name', ''))) = '.exe' then
           begin
             UrlExe := Assets.Objects[I].Get('browser_download_url', '');
             Total := Assets.Objects[I].Get('size', Int64(0));
@@ -619,7 +619,7 @@ var
 begin
   Exe := ParamStr(0);
   Dir := ExtractFilePath(Exe);
-  Cmd := Dir + 'dicastro_atualiza.cmd';
+  Cmd := Dir + 'atualiza.cmd';
   Reabrir := not PrincipalAberto;
 
   try
@@ -709,15 +709,15 @@ begin
   if Anterior <> '' then
     MostrarPop(mpSucesso, 'Sistema atualizado',
       'O sistema foi atualizado para a versão ' + APP_VERSAO +
-      '. Obrigado por usar o Dicastro Preço!');
+      '.');
 end;
 
 procedure IniciarAtualizacaoAutomatica;
 begin
   GarantirChaves;
   { remove sobras de uma troca ja concluida }
-  if not FileExists(ExtractFilePath(ParamStr(0)) + 'dicastro_atualiza.cmd') then
-    DeleteFile(ExtractFilePath(ParamStr(0)) + 'dicastro.baixando.tmp');
+  if not FileExists(ExtractFilePath(ParamStr(0)) + 'atualiza.cmd') then
+    DeleteFile(ExtractFilePath(ParamStr(0)) + 'atualiza.baixando.tmp');
   AvisarSeAtualizou;
   TAtualizaThread.Create.Start;
 end;

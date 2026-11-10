@@ -25,9 +25,9 @@ credenciais*
 # --- Logs e dados de execução ---
 Logs/
 *.log
-dicastro.baixando.tmp
-dicastro.novo.exe
-dicastro_atualiza.cmd
+atualiza.baixando.tmp
+atualiza.novo.exe
+atualiza.cmd
 
 # --- Binários / pacotes (executável vai em GitHub Releases) ---
 *.exe
