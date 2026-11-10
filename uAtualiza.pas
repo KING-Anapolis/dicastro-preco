@@ -28,6 +28,7 @@ interface
 
 const
   APP_VERSAO = '3.0.0';
+  REPO_PADRAO = 'KING-Anapolis/dicastro-preco';
 
 var
   { Setar True depois que a tela principal abrir. }
@@ -100,7 +101,7 @@ begin
   try
     Ini := TIniFile.Create(ExtractFilePath(ParamStr(0)) + 'conf.ini');
     try
-      Chave('REPO', '');
+      Chave('REPO', REPO_PADRAO);
       Chave('ATIVO', 'S');
       Chave('SUPORTE_NOME', 'King Tecnologia');
       Chave('SUPORTE_FONE', '62 9447-9690');
@@ -482,7 +483,7 @@ var
 begin
   Achou := False;
   try
-    Repo := PLerINI('ATUALIZACAO', 'REPO', '');
+    Repo := PLerINI('ATUALIZACAO', 'REPO', REPO_PADRAO);
     if (Repo = '') or (UpperCase(PLerINI('ATUALIZACAO', 'ATIVO', 'S')) <> 'S') then
       Exit;
 
