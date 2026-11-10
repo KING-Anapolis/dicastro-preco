@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/><PathDelim Value="\"/>
+    <General><Title Value="filter_checkbox_smoke"/><ResourceType Value="res"/></General>
+    <RequiredPackages>
+      <Item><PackageName Value="DateTimeCtrlsDsgn"/></Item>
+      <Item><PackageName Value="DateTimeCtrls"/></Item>
+      <Item><PackageName Value="Printer4Lazarus"/></Item>
+      <Item><PackageName Value="DBGridController"/></Item>
+      <Item><PackageName Value="rxnew"/></Item>
+      <Item><PackageName Value="FCL"/></Item>
+      <Item><PackageName Value="EhLib"/></Item>
+      <Item><PackageName Value="zcomponent"/></Item>
+      <Item><PackageName Value="bgracontrols"/></Item>
+      <Item><PackageName Value="frce"/></Item>
+      <Item><PackageName Value="laz_fpspreadsheet"/></Item>
+      <Item><PackageName Value="LCL"/></Item>
+    </RequiredPackages>
+    <Units><Unit><Filename Value="filter_checkbox_smoke.lpr"/><IsPartOfProject Value="True"/></Unit></Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/><PathDelim Value="\"/>
+    <Target><Filename Value="filter_checkbox_smoke"/></Target>
+    <SearchPaths><OtherUnitFiles Value=".."/></SearchPaths>
+    <CodeGeneration><TargetCPU Value="i386"/><TargetOS Value="win32"/></CodeGeneration>
+  </CompilerOptions>
+</CONFIG>

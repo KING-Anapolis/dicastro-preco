@@ -1,0 +1,148 @@
+object frmConf: TfrmConf
+  Left = 200
+  Height = 240
+  Top = 100
+  Width = 320
+  BorderStyle = bsNone
+  Caption = 'frmConf'
+  ClientHeight = 240
+  ClientWidth = 320
+  Color = 13001728
+  OnShow = FormShow
+  Position = poScreenCenter
+  object Panel1: TPanel
+    Left = 0
+    Height = 240
+    Top = 0
+    Width = 320
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 240
+    ClientWidth = 320
+    Color = clWhite
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    object Panel2: TPanel
+      Left = 0
+      Height = 40
+      Top = 0
+      Width = 320
+      Align = alTop
+      ClientHeight = 40
+      ClientWidth = 320
+      Color = 13001728
+      ParentBackground = False
+      ParentColor = False
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 8
+        Height = 21
+        Top = 8
+        Width = 106
+        Caption = 'Configurações'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Segoe UI Semibold'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label2: TLabel
+        Cursor = crHandPoint
+        Left = 304
+        Height = 21
+        Top = 8
+        Width = 10
+        Caption = 'X'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clWhite
+        Font.Height = -16
+        Font.Name = 'Segoe UI Semibold'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+        OnClick = Label2Click
+      end
+    end
+    object Label12: TLabel
+      AnchorSideLeft.Control = SpinEdit1
+      Left = 8
+      Height = 15
+      Top = 48
+      Width = 101
+      Caption = 'Tamanho da Fonte'
+      Font.CharSet = ANSI_CHARSET
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object SpinEdit1: TSpinEdit
+      Left = 8
+      Height = 23
+      Top = 65
+      Width = 65
+      TabOrder = 1
+      Value = 9
+    end
+    object Label13: TLabel
+      AnchorSideLeft.Control = SpinEdit2
+      Left = 8
+      Height = 15
+      Top = 96
+      Width = 99
+      Caption = 'Linha do Historico'
+      Font.CharSet = ANSI_CHARSET
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object SpinEdit2: TSpinEdit
+      Left = 8
+      Height = 23
+      Top = 113
+      Width = 65
+      MinValue = 1
+      TabOrder = 2
+      Value = 10
+    end
+    object ckInativos: TCheckBox
+      Left = 8
+      Height = 19
+      Top = 144
+      Width = 123
+      Caption = 'Mostrar os inativos'
+      Font.CharSet = ANSI_CHARSET
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+    end
+    object Panel3: TPanel
+      Cursor = crHandPoint
+      Left = 192
+      Height = 34
+      Top = 200
+      Width = 121
+      Caption = 'SALVAR (F12)'
+      Color = 13001728
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -16
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentBackground = False
+      ParentColor = False
+      ParentFont = False
+      TabOrder = 4
+      OnClick = Panel3Click
+    end
+  end
+end

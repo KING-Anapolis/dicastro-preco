@@ -1,0 +1,2468 @@
+object data: Tdata
+  OldCreateOrder = False
+  Height = 320
+  HorizontalOffset = 460
+  VerticalOffset = 250
+  Width = 575
+  object zCon: TZConnection
+    ControlsCodePage = cCP_UTF8
+    Properties.Strings = (
+      'RawStringEncoding=DB_CP'
+    )
+    DisableSavepoints = False
+    HostName = 'localhost'
+    Port = 3050
+    Database = 'C:\UpSystem\DADOS\CHEMIE_RELATORIO_DADOS.FDB'
+    User = 'SYSDBA'
+    Password = 'masterkey'
+    Protocol = 'firebird'
+    LibraryLocation = 'C:\github\dicastro-preco\64fbclient.dll'
+    Left = 48
+    Top = 32
+  end
+  object qryLogin: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'select'
+      '  u.usu_id'
+      'from tb_usuario u'
+      'where u.usu_login = :login'
+      'and u.usu_senha = :senha'
+    )
+    Params = <    
+      item
+        Name = 'login'
+      end    
+      item
+        Name = 'senha'
+      end>
+    Left = 119
+    Top = 30
+    ParamData = <    
+      item
+        Name = 'login'
+      end    
+      item
+        Name = 'senha'
+      end>
+    object qryLoginUSU_ID: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'USU_ID'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+  end
+  object qryGrupo: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'select * from tb_prod_grupo'
+    )
+    Params = <>
+    Left = 47
+    Top = 96
+    object qryGrupoPGRU_EMPRESA: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PGRU_EMPRESA'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qryGrupoPGRU_ID: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PGRU_ID'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qryGrupoPGRU_DESCRICAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PGRU_DESCRICAO'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryGrupoPGRU_EXIBIR_TOUCH: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PGRU_EXIBIR_TOUCH'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryGrupoPGRU_ORDEM_TOUCH: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PGRU_ORDEM_TOUCH'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryGrupoPGRU_IMAGEM: TZBlobField
+      FieldKind = fkData
+      FieldName = 'PGRU_IMAGEM'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryGrupoPGRU_IFOOD: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PGRU_IFOOD'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryGrupoPGRU_ID_IFOOD: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PGRU_ID_IFOOD'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryGrupoPGRU_TRAY: TZInt64Field
+      FieldKind = fkData
+      FieldName = 'PGRU_TRAY'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryGrupoPGRU_ULTIMA_ALTERACAO: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'PGRU_ULTIMA_ALTERACAO'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryGrupoPGRU_ID_MELI: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PGRU_ID_MELI'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 50
+    end
+    object qryGrupoPGRU_ECOMMERCE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PGRU_ECOMMERCE'
+      Index = 11
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryGrupoPGRU_ULTIMO_ENVIO_ECOMMERCE: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'PGRU_ULTIMO_ENVIO_ECOMMERCE'
+      Index = 12
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+  object qrySubGrupo: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'select * from tb_prod_sub_grupo'
+    )
+    Params = <>
+    Left = 119
+    Top = 96
+    object qrySubGrupoPSGR_EMPRESA: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PSGR_EMPRESA'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qrySubGrupoPSGR_ID: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PSGR_ID'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qrySubGrupoPSGR_DESCRICAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PSGR_DESCRICAO'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qrySubGrupoPSGR_GRUPO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PSGR_GRUPO'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrySubGrupoPSGR_PRECO_VENDA: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PSGR_PRECO_VENDA'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qrySubGrupoPSGR_DT_INI_PROM: TZDateField
+      FieldKind = fkData
+      FieldName = 'PSGR_DT_INI_PROM'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrySubGrupoPSGR_DT_FIM_PROM: TZDateField
+      FieldKind = fkData
+      FieldName = 'PSGR_DT_FIM_PROM'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrySubGrupoPSGR_VALOR_PROM: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PSGR_VALOR_PROM'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qrySubGrupoPSGR_USAR_LIGACAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PSGR_USAR_LIGACAO'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qrySubGrupoPSGR_IMAGEM: TZBlobField
+      FieldKind = fkData
+      FieldName = 'PSGR_IMAGEM'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrySubGrupoPSGR_ORDEM_TOUCH: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PSGR_ORDEM_TOUCH'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qrySubGrupoPSGR_EXIBIR_TOUCH: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PSGR_EXIBIR_TOUCH'
+      Index = 11
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qrySubGrupoPSGR_TIPO_VALOR_PROM: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PSGR_TIPO_VALOR_PROM'
+      Index = 12
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qrySubGrupoPSGR_ULTIMA_ALTERACAO: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'PSGR_ULTIMA_ALTERACAO'
+      Index = 13
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qrySubGrupoPSGR_ULTIMO_ENVIO_ECOMMERCE: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'PSGR_ULTIMO_ENVIO_ECOMMERCE'
+      Index = 14
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+  object qryMarca: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'select * from tb_prod_marca'
+    )
+    Params = <>
+    Left = 200
+    Top = 96
+    object qryMarcaPMAR_EMPRESA: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PMAR_EMPRESA'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qryMarcaPMAR_ID: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PMAR_ID'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qryMarcaPMAR_DESCRICAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PMAR_DESCRICAO'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryMarcaPMAR_ULTIMA_ALTERACAO: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'PMAR_ULTIMA_ALTERACAO'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryMarcaPMAR_IMAGEM: TZBlobField
+      FieldKind = fkData
+      FieldName = 'PMAR_IMAGEM'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryMarcaPMAR_ULTIMO_ENVIO_ECOMMERCE: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'PMAR_ULTIMO_ENVIO_ECOMMERCE'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+  object qrySetor: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'select * from tb_setor'
+    )
+    Params = <>
+    Left = 272
+    Top = 96
+    object qrySetorSET_ID: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'SET_ID'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qrySetorSET_EMPRESA: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'SET_EMPRESA'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qrySetorSET_DESCRICAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'SET_DESCRICAO'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+  end
+  object qryFornecedor: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'SELECT'
+      '  P.prd_fornecedor,'
+      '  F.pes_rsocial_nome'
+      'FROM TB_PRODUTO P'
+      'INNER JOIN TB_PESSOA F ON F.pes_id = P.prd_fornecedor'
+      'WHERE F.pes_status = ''A'''
+      'GROUP BY 1,2'
+      'ORDER BY 2'
+    )
+    Params = <>
+    Left = 47
+    Top = 160
+    object qryFornecedorPRD_FORNECEDOR: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_FORNECEDOR'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryFornecedorPES_RSOCIAL_NOME: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PES_RSOCIAL_NOME'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+  end
+  object qryProdutos: TZQuery
+    Connection = zCon
+    ReadOnly = True
+    SQL.Strings = (
+      'SELECT'
+      '    p.prd_id,'
+      '    p.prd_descricao,'
+      '    p.prd_un_venda,'
+      '    p.prd_preco_custo,'
+      '    p.prd_preco_venda,'
+      '    (SELECT * '
+      '       FROM sp_produto_estoque(1, p.prd_id, CURRENT_DATE)'
+      '    ) AS estoque,'
+      '    p.prd_grupo,'
+      '    g.pgru_descricao,'
+      '    p.prd_subgrupo,'
+      '    sg.psgr_descricao,'
+      '    p.prd_marca,'
+      '    m.pmar_descricao,'
+      '    p.prd_setor,'
+      '    s.set_descricao,'
+      '    p.prd_fornecedor,'
+      '    f.pes_rsocial_nome'
+      'FROM tb_produto p'
+      ''
+      'LEFT JOIN tb_prod_grupo g'
+      '       ON g.pgru_id = p.prd_grupo'
+      ''
+      'LEFT JOIN tb_prod_sub_grupo sg'
+      '       ON sg.psgr_id = p.prd_subgrupo'
+      ''
+      'LEFT JOIN tb_prod_marca m'
+      '       ON m.pmar_id = p.prd_marca'
+      ''
+      'LEFT JOIN tb_setor s'
+      '       ON s.set_id = p.prd_setor'
+      ''
+      'LEFT JOIN tb_pessoa f'
+      '       ON f.pes_id = p.prd_fornecedor'
+      ''
+      'WHERE p.prd_tipo_produto = ''N'''
+      ''
+      'AND ('
+      '    :STATUS = ''T'''
+      '    OR p.prd_status = :STATUS'
+      ')'
+      ''
+      'AND ('
+      '    COALESCE(NULLIF(:PRODUTO, ''''), ''0'') IN (''0'', ''-1'')'
+      '    OR p.prd_id = :PRODUTO'
+      ')'
+    )
+    Params = <    
+      item
+        Name = 'STATUS'
+      end    
+      item
+        Name = 'PRODUTO'
+      end>
+    Left = 200
+    Top = 30
+    ParamData = <    
+      item
+        Name = 'STATUS'
+      end    
+      item
+        Name = 'PRODUTO'
+      end>
+    object qryProdutosPRD_ID: TZIntegerField
+      DisplayLabel = 'ID'
+      FieldKind = fkData
+      FieldName = 'PRD_ID'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qryProdutosPRD_DESCRICAO: TZRawStringField
+      DisplayLabel = 'Descrição'
+      FieldKind = fkData
+      FieldName = 'PRD_DESCRICAO'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdutosPRD_UN_VENDA: TZRawStringField
+      DisplayLabel = 'UN'
+      FieldKind = fkData
+      FieldName = 'PRD_UN_VENDA'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 6
+    end
+    object qryProdutosPRD_PRECO_CUSTO: TZFMTBCDField
+      DisplayLabel = 'RS Custo'
+      FieldKind = fkData
+      FieldName = 'PRD_PRECO_CUSTO'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayFormat = 'R$ ,0.00'
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdutosPRD_PRECO_VENDA: TZFMTBCDField
+      DisplayLabel = 'R$ Venda'
+      FieldKind = fkData
+      FieldName = 'PRD_PRECO_VENDA'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayFormat = 'R$ ,0.00'
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdutosESTOQUE: TZBCDField
+      DisplayLabel = 'Estoque'
+      FieldKind = fkData
+      FieldName = 'ESTOQUE'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = True
+      Required = False
+      DisplayFormat = ',0.00'
+      Precision = 18
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qryProdutosPRD_GRUPO: TZIntegerField
+      DisplayLabel = 'ID Grupo'
+      FieldKind = fkData
+      FieldName = 'PRD_GRUPO'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdutosPGRU_DESCRICAO: TZRawStringField
+      DisplayLabel = 'Grupo'
+      FieldKind = fkData
+      FieldName = 'PGRU_DESCRICAO'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdutosPRD_SUBGRUPO: TZIntegerField
+      DisplayLabel = 'ID SubGrupo'
+      FieldKind = fkData
+      FieldName = 'PRD_SUBGRUPO'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdutosPSGR_DESCRICAO: TZRawStringField
+      DisplayLabel = 'SubGrupo'
+      FieldKind = fkData
+      FieldName = 'PSGR_DESCRICAO'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdutosPRD_MARCA: TZIntegerField
+      DisplayLabel = 'ID Marca'
+      FieldKind = fkData
+      FieldName = 'PRD_MARCA'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdutosPMAR_DESCRICAO: TZRawStringField
+      DisplayLabel = 'Marca'
+      FieldKind = fkData
+      FieldName = 'PMAR_DESCRICAO'
+      Index = 11
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdutosPRD_SETOR: TZIntegerField
+      DisplayLabel = 'ID Setor'
+      FieldKind = fkData
+      FieldName = 'PRD_SETOR'
+      Index = 12
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdutosSET_DESCRICAO: TZRawStringField
+      DisplayLabel = 'Setor'
+      FieldKind = fkData
+      FieldName = 'SET_DESCRICAO'
+      Index = 13
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdutosPRD_FORNECEDOR: TZIntegerField
+      DisplayLabel = 'ID Fonr.'
+      FieldKind = fkData
+      FieldName = 'PRD_FORNECEDOR'
+      Index = 14
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdutosPES_RSOCIAL_NOME: TZRawStringField
+      DisplayLabel = 'Fornecedor'
+      FieldKind = fkData
+      FieldName = 'PES_RSOCIAL_NOME'
+      Index = 15
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+  end
+  object qryCompras: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'SELECT FIRST :LIMITE *'
+      'FROM'
+      '('
+      '    SELECT'
+      '      '''' AS DEVOLUCAO,'
+      '      ''NOTA FISCAL'' AS ORIGEM,'
+      '      N.nf_numero AS NUMERO,'
+      '      N.nf_dt_emissao AS EMISSAO,'
+      '      F.pes_rsocial_nome AS FORNECEDOR,'
+      '      I.nfi_qtde_estoque AS QTD,'
+      '      p.PRD_UN_VENDA AS UN,'
+      '      I.NFI_VALOR_SUB_TOTAL / I.nfi_qtde_estoque AS VR_UN,'
+      '      I.nfi_valor_desconto AS DESCONTO,'
+      '      I.nfi_valor_total AS TOTAL'
+      '    FROM tb_nota_fiscal_item I'
+      '    LEFT JOIN TB_NOTA_FISCAL N ON N.nf_id = I.nfi_nota_fiscal'
+      '    LEFT JOIN TB_PESSOA F ON F.pes_id = N.nf_pessoa'
+      '    LEFT JOIN TB_PRODUTO P ON P.PRD_ID = i.NFI_PRODUTO'
+      '    WHERE N.nf_status = ''N'''
+      '      AND I.nfi_produto = :PRODUTO'
+      '      and n.nf_pedido_compra is null'
+      ''
+      '    UNION ALL'
+      ''
+      '    SELECT'
+      '      '''' AS DEVOLUCAO,'
+      '      ''PED. COMPRA'' AS ORIGEM,'
+      '      C.pdc_id AS NUMERO,'
+      '      C.pdc_dt_recebimento AS EMISSAO,'
+      '      F.pes_rsocial_nome AS FORNECEDOR,'
+      '      IC.pdci_qtde_recebida AS QTD,'
+      '      IC.pdci_unidade AS UN,'
+      '      IC.pdci_valor_unitario AS VR_UN,'
+      '      IC.pdci_desconto AS DESCONTO,'
+      '      IC.pdci_valor_recebido AS TOTAL'
+      '    FROM tb_pedido_compra_item IC'
+      '    LEFT JOIN tb_pedido_compra C ON C.pdc_id = IC.pdci_pedido_compra'
+      '    LEFT JOIN TB_PESSOA F ON F.pes_id = C.pdc_fornecedor'
+      '    WHERE C.pdc_status = ''R'''
+      '      AND IC.pdci_produto = :PRODUTO'
+      '      and c.pdc_nota_fiscal is null'
+      ''
+      '    UNION ALL'
+      ''
+      '    SELECT'
+      '      ''X'' AS DEVOLUCAO,'
+      '      ''TROCA/DEV'' AS ORIGEM,'
+      '      DV.dev_id AS NUMERO,'
+      '      DV.dev_dt_emissao AS EMISSAO,'
+      '      F.pes_rsocial_nome AS FORNECEDOR,'
+      '      DVI.devi_quantidade AS QTD,'
+      '      DVI.devi_un_venda AS UN,'
+      '      DVI.devi_valor_unitario AS VR_UN,'
+      '      0.00 AS DESCONTO,'
+      '      DVI.devi_valor_total AS TOTAL'
+      '    FROM tb_devolucao_item DVI'
+      '    LEFT JOIN tb_devolucao DV ON DV.dev_id = DVI.devi_devolucao'
+      '    LEFT JOIN tb_pessoa F ON F.pes_id = DV.dev_cliente'
+      '    WHERE DV.dev_tipo = ''V'''
+      '    AND DVI.devi_produto = :PRODUTO'
+      ''
+      '    UNION ALL'
+      ''
+      '    SELECT'
+      '      ''O'' AS DEVOLUCAO,'
+      '      ''OUTRAS/MOV'' AS ORIGEM,'
+      '      OM.omp_id AS NUMERO,'
+      '      OM.omp_dt_emissao AS EMISSAO,'
+      '      COALESCE('
+      '        NULLIF(TRIM(F.PES_RSOCIAL_NOME), ''''),'
+      '        NULLIF(TRIM(OM.OMP_OBSERVACAO), ''''),'
+      '        NULLIF(TRIM(OMI.OMPI_OBSERVACAO), '''')'
+      '      ) AS FORNECEDOR,'
+      '      OMI.ompi_quantidade AS QTD,'
+      '      OMI.ompi_unidade AS UN,'
+      '      OMI.ompi_valor_unitario AS VR_UN,'
+      '      0.00 AS DESCONTO,'
+      '      OMI.ompi_valor_total AS TOTAL'
+      '    FROM tb_outras_mov_item OMI'
+      '    LEFT JOIN tb_outras_mov OM ON OM.omp_id = OMI.ompi_outras_mov'
+      '    LEFT JOIN tb_pessoa F ON F.pes_id = OM.omp_pessoa'
+      '    WHERE OMI.ompi_tipo_mov = ''E'''
+      '    AND OMI.ompi_produto = :PRODUTO'
+      ''
+      ') X'
+      'ORDER BY X.EMISSAO DESC'
+    )
+    Params = <    
+      item
+        Name = 'LIMITE'
+      end    
+      item
+        Name = 'PRODUTO'
+      end>
+    Left = 272
+    Top = 32
+    ParamData = <    
+      item
+        Name = 'LIMITE'
+      end    
+      item
+        Name = 'PRODUTO'
+      end>
+    object qryComprasDEVOLUCAO: TZRawStringField
+      DisplayLabel = 'DEV'
+      FieldKind = fkData
+      FieldName = 'DEVOLUCAO'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = True
+      Required = False
+      Size = 1
+    end
+    object qryComprasNUMERO: TZIntegerField
+      DisplayLabel = 'Numero'
+      FieldKind = fkData
+      FieldName = 'NUMERO'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryComprasEMISSAO: TZDateField
+      DisplayLabel = 'Data'
+      FieldKind = fkData
+      FieldName = 'EMISSAO'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryComprasFORNECEDOR: TZRawStringField
+      DisplayLabel = 'Fornecedor'
+      FieldKind = fkData
+      FieldName = 'FORNECEDOR'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryComprasQTD: TZFMTBCDField
+      DisplayLabel = 'Qtd.'
+      FieldKind = fkData
+      FieldName = 'QTD'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryComprasUN: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'UN'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 6
+    end
+    object qryComprasVR_UN: TZFMTBCDField
+      DisplayLabel = 'R$ UN'
+      FieldKind = fkData
+      FieldName = 'VR_UN'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = True
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 10
+    end
+    object qryComprasDESCONTO: TZBCDField
+      DisplayLabel = 'R$ Desconto'
+      FieldKind = fkData
+      FieldName = 'DESCONTO'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = True
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qryComprasTOTAL: TZBCDField
+      DisplayLabel = 'R$ Total'
+      FieldKind = fkData
+      FieldName = 'TOTAL'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = True
+      MaxValue = 0
+      MinValue = 0
+    end
+  end
+  object qryVendas: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'SELECT FIRST :LIMITE'
+      '      ''VENDA'' AS ORIGEM,'
+      '      V.pev_id AS NUMERO,'
+      '      V.pev_dt_faturamento AS EMISSAO,'
+      '      c.pes_rsocial_nome AS VENDEDOR,'
+      '      CL.pes_rsocial_nome || ''('' || CL.pes_fantasia_apelido || '')'' AS CLIENTE,'
+      '      I.pevi_quantidade AS QTD,'
+      '      I.pevi_un_venda AS UN,'
+      '      I.pevi_valor_unitario AS VR_UN,'
+      '      I.pevi_valor_desconto AS DESCONTO,'
+      '      I.pevi_valor_total AS TOTAL,'
+      '      CAST(CASE WHEN COALESCE(P.PRD_PRECO_CUSTO, 0) > 0'
+      '        THEN ((I.pevi_valor_unitario - P.PRD_PRECO_CUSTO) / P.PRD_PRECO_CUSTO) * 100'
+      '        ELSE NULL END AS NUMERIC(15,6)) AS MARKUP'
+      '    FROM TB_PEDIDO_VENDA_ITEM I'
+      '    LEFT JOIN TB_PRODUTO P ON P.PRD_ID = I.pevi_produto'
+      '    LEFT JOIN TB_PEDIDO_VENDA V ON V.pev_id = I.pevi_pedido_venda'
+      '    LEFT JOIN TB_PESSOA C on c.pes_id = v.pev_vendedor'
+      '    LEFT JOIN TB_PESSOA CL ON CL.pes_id = V.pev_cliente'
+      '    WHERE V.pev_status = ''F'''
+      '    and i.pevi_produto = :produto'
+      '    ORDER BY 3 DESC'
+    )
+    Params = <    
+      item
+        Name = 'LIMITE'
+      end    
+      item
+        Name = 'PRODUTO'
+      end>
+    Left = 352
+    Top = 32
+    ParamData = <    
+      item
+        Name = 'LIMITE'
+      end    
+      item
+        Name = 'PRODUTO'
+      end>
+    object qryVendasNUMERO: TZIntegerField
+      DisplayLabel = 'Numero'
+      FieldKind = fkData
+      FieldName = 'NUMERO'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qryVendasEMISSAO: TZDateField
+      DisplayLabel = 'Data'
+      FieldKind = fkData
+      FieldName = 'EMISSAO'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryVendasVENDEDOR: TZRawStringField
+      DisplayLabel = 'Vendedor'
+      FieldKind = fkData
+      FieldName = 'VENDEDOR'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryVendasCLIENTE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'CLIENTE'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = True
+      Required = False
+      Size = 202
+    end
+    object qryVendasQTD: TZFMTBCDField
+      DisplayLabel = 'Qtd.'
+      FieldKind = fkData
+      FieldName = 'QTD'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      DisplayFormat = ',0.00'
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryVendasUN: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'UN'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 6
+    end
+    object qryVendasVR_UN: TZFMTBCDField
+      DisplayLabel = 'R$ UN'
+      FieldKind = fkData
+      FieldName = 'VR_UN'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = True
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryVendasDESCONTO: TZBCDField
+      DisplayLabel = 'R$ Desconto'
+      FieldKind = fkData
+      FieldName = 'DESCONTO'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = True
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qryVendasTOTAL: TZBCDField
+      DisplayLabel = 'R$ Total'
+      FieldKind = fkData
+      FieldName = 'TOTAL'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = True
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qryVendasMARKUP: TZFMTBCDField
+      DisplayLabel = 'Markup %'
+      FieldKind = fkData
+      FieldName = 'MARKUP'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = True
+      Required = False
+      DisplayFormat = '0.0'
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+  end
+  object qryProdCad: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'SELECT * FROM TB_PRODUTO WHERE PRD_ID = :ID'
+    )
+    Params = <    
+      item
+        Name = 'ID'
+      end>
+    Left = 200
+    Top = 160
+    ParamData = <    
+      item
+        Name = 'ID'
+      end>
+    object qryProdCadPRD_EMPRESA: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_EMPRESA'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_ID: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_ID'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = True
+    end
+    object qryProdCadPRD_STATUS: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_STATUS'
+      Index = 2
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_DESCRICAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_DESCRICAO'
+      Index = 3
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdCadPRD_GRUPO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_GRUPO'
+      Index = 4
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_SUBGRUPO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_SUBGRUPO'
+      Index = 5
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_MARCA: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_MARCA'
+      Index = 6
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_UN_COMPRA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_UN_COMPRA'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 6
+    end
+    object qryProdCadPRD_PRECO_CUSTO: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PRECO_CUSTO'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_UN_VENDA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_UN_VENDA'
+      Index = 9
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 6
+    end
+    object qryProdCadPRD_LUCRO: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_LUCRO'
+      Index = 10
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qryProdCadPRD_PRECO_VENDA: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PRECO_VENDA'
+      Index = 11
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_FOTO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_FOTO'
+      Index = 12
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 500
+    end
+    object qryProdCadPRD_NCM: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_NCM'
+      Index = 13
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 10
+    end
+    object qryProdCadPRD_LIGACAO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_LIGACAO'
+      Index = 14
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_PESO_LIQUIDO: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PESO_LIQUIDO'
+      Index = 15
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 3
+    end
+    object qryProdCadPRD_PESO_BRUTO: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PESO_BRUTO'
+      Index = 16
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 3
+    end
+    object qryProdCadPRD_CONTROLA_ESTOQUE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_CONTROLA_ESTOQUE'
+      Index = 17
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_ESTOQUE_MINIMO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_ESTOQUE_MINIMO'
+      Index = 18
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_TIPO_PRODUTO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_TIPO_PRODUTO'
+      Index = 19
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_LOCAL: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_LOCAL'
+      Index = 20
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 30
+    end
+    object qryProdCadPRD_COMISSAO_PERC: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_COMISSAO_PERC'
+      Index = 21
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qryProdCadPRD_CALCULA_COMISSAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_CALCULA_COMISSAO'
+      Index = 22
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_EDITADO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_EDITADO'
+      Index = 23
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_APLICA_DESCONTO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_APLICA_DESCONTO'
+      Index = 24
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 10
+    end
+    object qryProdCadPRD_COD_FILIAL: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_COD_FILIAL'
+      Index = 25
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_COD_BARRAS_CAIXA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_COD_BARRAS_CAIXA'
+      Index = 26
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_COD_ATACADO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_COD_ATACADO'
+      Index = 27
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_EXPORTAR: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_EXPORTAR'
+      Index = 28
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_ESTOQUE_MINIMO_NF: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_ESTOQUE_MINIMO_NF'
+      Index = 29
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qryProdCadPRD_DT_CADASTRO: TZDateField
+      FieldKind = fkData
+      FieldName = 'PRD_DT_CADASTRO'
+      Index = 30
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_REFERENCIA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_REFERENCIA'
+      Index = 31
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdCadPRD_DT_ULTIMO_LANCAMENTO: TZDateField
+      FieldKind = fkData
+      FieldName = 'PRD_DT_ULTIMO_LANCAMENTO'
+      Index = 32
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_OBSERVACAO: TZBlobField
+      FieldKind = fkData
+      FieldName = 'PRD_OBSERVACAO'
+      Index = 33
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_METRAGEM_CUBICA: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_METRAGEM_CUBICA'
+      Index = 34
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qryProdCadPRD_DT_INI_PROM: TZDateField
+      FieldKind = fkData
+      FieldName = 'PRD_DT_INI_PROM'
+      Index = 35
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_DT_FIM_PROM: TZDateField
+      FieldKind = fkData
+      FieldName = 'PRD_DT_FIM_PROM'
+      Index = 36
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_VALOR_PROM: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_VALOR_PROM'
+      Index = 37
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_BALANCA_TECLA: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_BALANCA_TECLA'
+      Index = 38
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_BALANCA_VALIDADE: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_BALANCA_VALIDADE'
+      Index = 39
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_BALANCA_TIPO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_BALANCA_TIPO'
+      Index = 40
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_BALANCA_CODIGO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_BALANCA_CODIGO'
+      Index = 41
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_PRECO_CUSTO_LIQ: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PRECO_CUSTO_LIQ'
+      Index = 42
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_SELECIONADO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_SELECIONADO'
+      Index = 43
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_CODIGO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_CODIGO'
+      Index = 44
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_FRACIONADO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_FRACIONADO'
+      Index = 45
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_FATOR_VOLUME: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_FATOR_VOLUME'
+      Index = 46
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_VOLUME: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_VOLUME'
+      Index = 47
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_IMAGEM: TZBlobField
+      FieldKind = fkData
+      FieldName = 'PRD_IMAGEM'
+      Index = 48
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_GERENCIAL: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_GERENCIAL'
+      Index = 49
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_INFORMAR_TOTAL: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_INFORMAR_TOTAL'
+      Index = 50
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_SISTEMA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_SISTEMA'
+      Index = 51
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_SETOR: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_SETOR'
+      Index = 52
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_IMPRIMIR_RESTAURANTE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_IMPRIMIR_RESTAURANTE'
+      Index = 53
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_STATUS_RESTAURANTE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_STATUS_RESTAURANTE'
+      Index = 54
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_INCLUSAO_MASSA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_INCLUSAO_MASSA'
+      Index = 55
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_FORNECEDOR: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_FORNECEDOR'
+      Index = 56
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_ATUAL_FORN: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_ATUAL_FORN'
+      Index = 57
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_OBS_RESUMIDA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_OBS_RESUMIDA'
+      Index = 58
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 200
+    end
+    object qryProdCadPRD_ALTERAR_PRECO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_ALTERAR_PRECO'
+      Index = 59
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_CONTROLA_LOTE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_CONTROLA_LOTE'
+      Index = 60
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_OBRIGAR_VALIDADE_LOTE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_OBRIGAR_VALIDADE_LOTE'
+      Index = 61
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_VALIDAR_QTDE_LOTE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_VALIDAR_QTDE_LOTE'
+      Index = 62
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_USAR_LIGACAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_USAR_LIGACAO'
+      Index = 63
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_PRODUTO_NF: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_PRODUTO_NF'
+      Index = 64
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_VASILHAME: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_VASILHAME'
+      Index = 65
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_STATUS_VASILHAME: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_STATUS_VASILHAME'
+      Index = 66
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_MOEDA: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_MOEDA'
+      Index = 67
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_IFOOD: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_IFOOD'
+      Index = 68
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_WORDPRESS: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_WORDPRESS'
+      Index = 69
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_PRECO_MINIMO: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PRECO_MINIMO'
+      Index = 70
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_FAVORITO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_FAVORITO'
+      Index = 71
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_TIPO_VALIDADE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_TIPO_VALIDADE'
+      Index = 72
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_VALOR_VALIDADE: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_VALOR_VALIDADE'
+      Index = 73
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_FORN_LOTE: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_FORN_LOTE'
+      Index = 74
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_INFADPROD: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_INFADPROD'
+      Index = 75
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 500
+    end
+    object qryProdCadPRD_TIPO_VALOR_PROM: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_TIPO_VALOR_PROM'
+      Index = 76
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_CASAS_DECIMAIS_PRECO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_CASAS_DECIMAIS_PRECO'
+      Index = 77
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_ID_IFOOD: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_ID_IFOOD'
+      Index = 78
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdCadPRD_PRECO_MINIMO_PERC: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PRECO_MINIMO_PERC'
+      Index = 79
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qryProdCadPRD_CODIGO_FISCAL: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_CODIGO_FISCAL'
+      Index = 80
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 60
+    end
+    object qryProdCadPRD_DT_CODIGO: TZDateField
+      FieldKind = fkData
+      FieldName = 'PRD_DT_CODIGO'
+      Index = 81
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_CODIGO_FISCAL_ANT: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_CODIGO_FISCAL_ANT'
+      Index = 82
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 60
+    end
+    object qryProdCadPRD_DT_CODIGO_ANT: TZDateField
+      FieldKind = fkData
+      FieldName = 'PRD_DT_CODIGO_ANT'
+      Index = 83
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_VENDER_AREA_VOLUME: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_VENDER_AREA_VOLUME'
+      Index = 84
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_QUARENTENA_AO_PRODUZIR: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_QUARENTENA_AO_PRODUZIR'
+      Index = 85
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_QUARENTENA_DIAS: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_QUARENTENA_DIAS'
+      Index = 86
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_TRAY: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_TRAY'
+      Index = 87
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdCadPRD_ULTIMA_ALTERACAO: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'PRD_ULTIMA_ALTERACAO'
+      Index = 88
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_LARGURA: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_LARGURA'
+      Index = 89
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_ALTURA: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_ALTURA'
+      Index = 90
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_PROFUNDIDADE: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PROFUNDIDADE'
+      Index = 91
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_PIZZA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_PIZZA'
+      Index = 92
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_NR_PEDACOS: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_NR_PEDACOS'
+      Index = 93
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_MAX_SABORES: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_MAX_SABORES'
+      Index = 94
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_MONTAR_PRECO_SABORES: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_MONTAR_PRECO_SABORES'
+      Index = 95
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_TIPO_CASHBACK: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_TIPO_CASHBACK'
+      Index = 96
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_VALOR_CASHBACK: TZBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_VALOR_CASHBACK'
+      Index = 97
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = 0
+      MinValue = 0
+      Size = 2
+    end
+    object qryProdCadPRD_SOLICITA_COD_DEV_VASILHAME: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_SOLICITA_COD_DEV_VASILHAME'
+      Index = 98
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_AREA_CAIXA: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_AREA_CAIXA'
+      Index = 99
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_ID_WORDPRESS: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_ID_WORDPRESS'
+      Index = 100
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdCadPRD_URL_BBIMG: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_URL_BBIMG'
+      Index = 101
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 2000
+    end
+    object qryProdCadPRD_APLICAR_TX_SERVICO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_APLICAR_TX_SERVICO'
+      Index = 102
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_TIPO_VARIACAO: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_TIPO_VARIACAO'
+      Index = 103
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_ID_MELI: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_ID_MELI'
+      Index = 104
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 50
+    end
+    object qryProdCadPRD_SKU: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_SKU'
+      Index = 105
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdCadPRD_ULTIMO_ENVIO_ECOMMERCE: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'PRD_ULTIMO_ENVIO_ECOMMERCE'
+      Index = 106
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_CONTROLE_IMENDES: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_CONTROLE_IMENDES'
+      Index = 107
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_DT_CONSULTA_IMENDES: TZDateField
+      FieldKind = fkData
+      FieldName = 'PRD_DT_CONSULTA_IMENDES'
+      Index = 108
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_HR_CONSULTA_IMENDES: TZTimeField
+      FieldKind = fkData
+      FieldName = 'PRD_HR_CONSULTA_IMENDES'
+      Index = 109
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_STATUS_CONSULTA_IMENDES: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_STATUS_CONSULTA_IMENDES'
+      Index = 110
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 2000
+    end
+    object qryProdCadPRD_CODIGO_IMENDES: TZIntegerField
+      FieldKind = fkData
+      FieldName = 'PRD_CODIGO_IMENDES'
+      Index = 111
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+    object qryProdCadPRD_IFOOD_SERVES: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_IFOOD_SERVES'
+      Index = 112
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_QTD_MAX_SENHA: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_QTD_MAX_SENHA'
+      Index = 113
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_PRECO_COMPRA: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_PRECO_COMPRA'
+      Index = 114
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_CUSTO_AQUISICAO: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_CUSTO_AQUISICAO'
+      Index = 115
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_CUSTO_CONTABIL: TZFMTBCDField
+      FieldKind = fkData
+      FieldName = 'PRD_CUSTO_CONTABIL'
+      Index = 116
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = False
+      MaxValue = '0'
+      MinValue = '0'
+      Size = 6
+    end
+    object qryProdCadPRD_INF_ADC_C177: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_INF_ADC_C177'
+      Index = 117
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 30
+    end
+    object qryProdCadPRD_CESTA_BASICA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_CESTA_BASICA'
+      Index = 118
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_REFEICAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_REFEICAO'
+      Index = 119
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_TIPO_KIT: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_TIPO_KIT'
+      Index = 120
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_PEDIR_LIBERACAO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_PEDIR_LIBERACAO'
+      Index = 121
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+    object qryProdCadPRD_DESCRICAO_CURTA: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_DESCRICAO_CURTA'
+      Index = 122
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 100
+    end
+    object qryProdCadPRD_GERAR_LOTE_AUTOMATICO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'PRD_GERAR_LOTE_AUTOMATICO'
+      Index = 123
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 1
+    end
+  end
+  object qryRegistro: TZQuery
+    Connection = zCon
+    SQL.Strings = (
+      'SELECT'
+      '  FIRST 1'
+      '  U.usu_nome AS USUARIO,'
+      '  R.reg_dt_lancamento AS DATA'
+      'FROM TB_REGISTRO_UTILIZADO R'
+      'LEFT JOIN TB_USUARIO U ON U.usu_id = R.reg_usuario'
+      'WHERE R.reg_tabela = ''PRODUTO'''
+      'AND R.reg_id_registro = :ID'
+    )
+    Params = <    
+      item
+        Name = 'ID'
+      end>
+    Left = 48
+    Top = 232
+    ParamData = <    
+      item
+        Name = 'ID'
+      end>
+    object qryRegistroUSUARIO: TZRawStringField
+      FieldKind = fkData
+      FieldName = 'USUARIO'
+      Index = 0
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Size = 80
+    end
+    object qryRegistroDATA: TZDateTimeField
+      FieldKind = fkData
+      FieldName = 'DATA'
+      Index = 1
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+    end
+  end
+  object qryExec: TZQuery
+    Connection = zCon
+    Params = <>
+    Left = 200
+    Top = 232
+  end
+end

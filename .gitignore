@@ -1,0 +1,62 @@
+# --- Configuração / credenciais (nunca versionar) ---
+conf.ini
+Conf.INI
+*.ini
+!.gitignore
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*.token
+secrets*
+credenciais*
+
+# --- Bancos de dados e dumps ---
+*.fdb
+*.gdb
+*.fbk
+*.nbk
+*.sql.bak
+*.sqlite
+*.db
+
+# --- Logs e dados de execução ---
+Logs/
+*.log
+dicastro.baixando.tmp
+dicastro.novo.exe
+dicastro_atualiza.cmd
+
+# --- Binários / pacotes (executável vai em GitHub Releases) ---
+*.exe
+*.dll
+*.rar
+*.zip
+*.7z
+*.msi
+
+# --- Artefatos de compilação Lazarus/FPC ---
+lib/
+*.o
+*.ppu
+*.a
+*.rst
+*.compiled
+*.bak
+*.res.bak
+*.lps
+backup/
+tests/**/lib/
+tests/**/*.exe
+
+# --- Ambiente / editor / capturas ---
+.claude/
+.vscode/
+.idea/
+*.png.tmp
+screenshots/
+shots/
+Thumbs.db
+desktop.ini

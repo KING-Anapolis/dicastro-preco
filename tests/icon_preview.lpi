@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="12"/>
+    <PathDelim Value="\"/>
+    <General>
+      <Title Value="icon_preview"/>
+      <ResourceType Value="res"/>
+    </General>
+    <RequiredPackages>
+      <Item><PackageName Value="frce"/></Item>
+      <Item><PackageName Value="laz_fpspreadsheet"/></Item>
+      <Item><PackageName Value="zcomponent"/></Item>
+      <Item><PackageName Value="LCL"/></Item>
+    </RequiredPackages>
+    <Units>
+      <Unit>
+        <Filename Value="icon_preview.lpr"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\ucomprasexport.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
+    </Units>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target><Filename Value="icon_preview"/></Target>
+    <SearchPaths><OtherUnitFiles Value=".."/></SearchPaths>
+    <CodeGeneration><TargetCPU Value="i386"/><TargetOS Value="win32"/></CodeGeneration>
+  </CompilerOptions>
+</CONFIG>

@@ -1,0 +1,307 @@
+object frm_login: Tfrm_login
+  Left = -8
+  Height = 649
+  Top = -8
+  Width = 1011
+  BorderStyle = bsNone
+  ClientHeight = 868
+  ClientWidth = 1463
+  Color = clBlack
+  Font.CharSet = ANSI_CHARSET
+  Font.Pitch = fpVariable
+  Font.Quality = fqDraft
+  OnActivate = FormActivate
+  Position = poScreenCenter
+  WindowState = wsMaximized
+  object pnl_fundo: TPanel
+    Left = 112
+    Height = 448
+    Top = 88
+    Width = 778
+    BevelOuter = bvNone
+    ClientHeight = 448
+    ClientWidth = 778
+    Color = clWhite
+    ParentBackground = False
+    ParentColor = False
+    TabOrder = 0
+    object pnl_lateral: TPanel
+      Left = 0
+      Height = 448
+      Top = 0
+      Width = 330
+      Align = alLeft
+      BevelOuter = bvNone
+      ClientHeight = 448
+      ClientWidth = 330
+      Color = 15790320
+      ParentBackground = False
+      ParentColor = False
+      TabOrder = 0
+      object Label1: TLabel
+        Left = 115
+        Height = 21
+        Top = 24
+        Width = 100
+        Caption = 'Bem-Vindo(a)'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGray
+        Font.Height = -16
+        Font.Name = 'Segoe UI Semibold'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label2: TLabel
+        Left = 45
+        Height = 30
+        Top = 408
+        Width = 240
+        Alignment = taCenter
+        Caption = 'Desenvolvido por Borges - www.borgis.com.br'#13#10'Versão 1.0.0'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGray
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsItalic]
+        ParentFont = False
+        WordWrap = True
+      end
+      object Label3: TLabel
+        Left = 124
+        Height = 15
+        Top = 382
+        Width = 83
+        Alignment = taCenter
+        Caption = 'King Tecnologia'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGray
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsItalic]
+        ParentFont = False
+        WordWrap = True
+      end
+      object Image1: TImage
+        Left = 16
+        Height = 296
+        Top = 64
+        Width = 296
+      end
+    end
+    object Label4: TLabel
+      Left = 462
+      Height = 21
+      Top = 24
+      Width = 193
+      Caption = 'Digite seu Usúario e Senha'
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clGray
+      Font.Height = -16
+      Font.Name = 'Segoe UI Semibold'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object pnl_usuario: TPanel
+      Left = 408
+      Height = 55
+      Top = 136
+      Width = 300
+      BevelOuter = bvNone
+      ClientHeight = 55
+      ClientWidth = 300
+      ParentBackground = False
+      TabOrder = 1
+      object pnl_usu_line: TPanel
+        Left = 0
+        Height = 2
+        Top = 53
+        Width = 300
+        Align = alBottom
+        Color = clGray
+        ParentBackground = False
+        ParentColor = False
+        TabOrder = 0
+      end
+      object Label5: TLabel
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 300
+        Align = alTop
+        AutoSize = False
+        Caption = 'Usuário'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGray
+        Font.Height = -19
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object edt_usuario: TEdit
+        Left = 0
+        Height = 28
+        Top = 25
+        Width = 300
+        Align = alClient
+        BorderStyle = bsNone
+        CharCase = ecUppercase
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGray
+        Font.Height = -19
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+      end
+    end
+    object pnl_senha: TPanel
+      Left = 408
+      Height = 55
+      Top = 224
+      Width = 300
+      BevelOuter = bvNone
+      ClientHeight = 55
+      ClientWidth = 300
+      ParentBackground = False
+      TabOrder = 2
+      object pnl_senha_line: TPanel
+        Left = 0
+        Height = 2
+        Top = 53
+        Width = 300
+        Align = alBottom
+        Color = clGray
+        ParentBackground = False
+        ParentColor = False
+        TabOrder = 0
+      end
+      object Label6: TLabel
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 300
+        Align = alTop
+        AutoSize = False
+        Caption = 'Senha'
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGray
+        Font.Height = -19
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object edt_senha: TEdit
+        Left = 0
+        Height = 28
+        Top = 25
+        Width = 300
+        Align = alClient
+        BorderStyle = bsNone
+        CharCase = ecUppercase
+        EchoMode = emPassword
+        Font.CharSet = ANSI_CHARSET
+        Font.Color = clGray
+        Font.Height = -19
+        Font.Pitch = fpVariable
+        Font.Quality = fqDraft
+        Font.Style = [fsBold]
+        ParentFont = False
+        PasswordChar = '-'
+        TabOrder = 1
+      end
+    end
+    object btn_entrar: TColorSpeedButton
+      Cursor = crHandPoint
+      Left = 568
+      Height = 46
+      Top = 314
+      Width = 140
+      Caption = 'ENTRAR (ENTER)'
+      Flat = True
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clWhite
+      Font.Height = -13
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      ParentFont = False
+      TextAutoSize = True
+      Toggle = False
+      Pressed = False
+      PopupMode = False
+      StateNormal.Color = 13001728
+      StateNormal.BorderColor = 13001728
+      StateNormal.BorderWidth = 1
+      StateHover.Color = 13001728
+      StateHover.BorderColor = 8404992
+      StateHover.BorderWidth = 1
+      StateActive.Color = 13001728
+      StateActive.BorderColor = 13001728
+      StateActive.BorderWidth = 1
+      StateDisabled.Color = 13001728
+      StateDisabled.BorderColor = 13001728
+      StateDisabled.BorderWidth = 1
+    end
+    object btn_sair: TColorSpeedButton
+      Cursor = crHandPoint
+      Left = 408
+      Height = 46
+      Top = 314
+      Width = 140
+      Caption = 'SAIR (ESC)'
+      Flat = True
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clGray
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      Font.Style = [fsBold]
+      OnClick = btn_sairClick
+      ParentFont = False
+      TextAutoSize = True
+      Toggle = False
+      Pressed = False
+      PopupMode = False
+      StateNormal.Color = clWhite
+      StateNormal.BorderColor = clWhite
+      StateNormal.BorderWidth = 1
+      StateHover.Color = clWhite
+      StateHover.BorderColor = clSilver
+      StateHover.BorderWidth = 1
+      StateActive.Color = clWhite
+      StateActive.BorderColor = clWhite
+      StateActive.BorderWidth = 1
+      StateDisabled.Color = clWhite
+      StateDisabled.BorderColor = clWhite
+      StateDisabled.BorderWidth = 1
+    end
+    object lb_sair: TLabel
+      Cursor = crHandPoint
+      Left = 760
+      Height = 21
+      Top = 8
+      Width = 9
+      Anchors = [akTop, akLeft, akRight]
+      Caption = 'X'
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clGray
+      Font.Height = -16
+      Font.Pitch = fpVariable
+      Font.Quality = fqDraft
+      ParentFont = False
+      OnClick = lb_sairClick
+    end
+  end
+end
