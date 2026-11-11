@@ -171,6 +171,10 @@ type
     procedure ConfigurarFiltroStatus;
     procedure AtualizarProdutos;
     procedure AtualizarSugestaoCompras;
+    procedure RemoverProdutoPedidoAtual;
+    procedure MenuExcluirPedidoClick(Sender: TObject);
+    procedure dbgProdCompraMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure ProdutosCompraAfterPost(DataSet: TDataSet);
     procedure InicializarProdutosCompra;
     procedure AdicionarProdutoPedidoAtual;
@@ -222,6 +226,9 @@ implementation
 {$R *.lfm}
 
 uses uComprasExport;
+
+type
+  TGradeMouse = class(TCustomDBGrid);
 
 { Tfrm_p }
 
@@ -478,6 +485,19 @@ begin
   FMenuAlvo := TDBGrid(FMenuColunas.PopupComponent);
   if FMenuAlvo <> dbgProdCompra then Exit;
 
+  if Assigned(FProdutosCompra) and FProdutosCompra.Active and
+     not FProdutosCompra.IsEmpty and
+     ProdutoNoPedido(FProdutosCompra.FieldByName('PRD_ID').AsInteger) then
+  begin
+    Item := TMenuItem.Create(FMenuColunas);
+    Item.Caption := 'Excluir produto do pedido';
+    Item.OnClick := @MenuExcluirPedidoClick;
+    FMenuColunas.Items.Add(Item);
+    Item := TMenuItem.Create(FMenuColunas);
+    Item.Caption := '-';
+    FMenuColunas.Items.Add(Item);
+  end;
+
   for I := 0 to FMenuAlvo.Columns.Count - 1 do
   begin
     Item := TMenuItem.Create(FMenuColunas);
@@ -491,6 +511,26 @@ begin
       not SameText(FMenuAlvo.Columns[I].FieldName, 'COMPRAR');
     FMenuColunas.Items.Add(Item);
   end;
+end;
+
+procedure Tfrm_p.MenuExcluirPedidoClick(Sender: TObject);
+begin
+  RemoverProdutoPedidoAtual;
+end;
+
+procedure Tfrm_p.dbgProdCompraMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var
+  Coluna, Linha: Integer;
+begin
+  if Button <> mbRight then Exit;
+  if not Assigned(FProdutosCompra) or not FProdutosCompra.Active or
+     FProdutosCompra.IsEmpty then Exit;
+  { o botão direito também seleciona a linha sob o cursor }
+  dbgProdCompra.MouseToCell(X, Y, Coluna, Linha);
+  if (Linha >= TGradeMouse(dbgProdCompra).FixedRows) and
+     (Linha <> TGradeMouse(dbgProdCompra).Row) then
+    FProdutosCompra.MoveBy(Linha - TGradeMouse(dbgProdCompra).Row);
 end;
 
 procedure Tfrm_p.MenuColunaClick(Sender: TObject);
@@ -1000,6 +1040,7 @@ begin
     FMenuColunas := TPopupMenu.Create(Self);
     FMenuColunas.OnPopup := @MenuColunasPopup;
     dbgProdCompra.PopupMenu := FMenuColunas;
+    dbgProdCompra.OnMouseDown := @dbgProdCompraMouseDown;
   end;
   FUltimoProdutoVendas := -1;
   FUltimoProdutoCompras := -1;
@@ -1094,11 +1135,8 @@ var
 begin
   if Assigned(FProdutosCompra) then Exit;
   FAlteracoesCompra := TStringList.Create;
-  FAlteracoesCompra.Sorted := True;
-  FAlteracoesCompra.Duplicates := dupIgnore;
+  { listas NÃO ordenadas: Values[]/Insert falham em TStringList.Sorted }
   FProdutosPedidoIDs := TStringList.Create;
-  FProdutosPedidoIDs.Sorted := True;
-  FProdutosPedidoIDs.Duplicates := dupIgnore;
   FProdutosCompra := TBufDataset.Create(Self);
   FProdutosCompra.FieldDefs.Add('PRD_ID', ftInteger);
   FProdutosCompra.FieldDefs.Add('PRD_DESCRICAO', ftString, 100);
@@ -1199,12 +1237,21 @@ begin
   end;
 
   ID := FProdutosCompra.FieldByName('PRD_ID').AsInteger;
+
+  { produto já está no pedido: apenas atualiza a quantidade/linha existente }
+  if FPedidoAtual.Active and FPedidoAtual.Locate('PRD_ID', ID, []) then
+  begin
+    AtualizarItemPedidoAtual(FProdutosCompra);
+    if FProdutosPedidoIDs.IndexOf(IntToStr(ID)) < 0 then
+      FProdutosPedidoIDs.Add(IntToStr(ID));
+    dbgProdCompra.Invalidate;
+    dbgPedidoAtual.Invalidate;
+    Exit;
+  end;
+
   Origem := FProdutosCompra;
   Destino := FPedidoAtual;
-  if not Destino.Locate('PRD_ID', ID, []) then
-    Destino.Append
-  else
-    Destino.Edit;
+  Destino.Append;
 
   Destino.FieldByName('PRD_ID').AsInteger := ID;
   Destino.FieldByName('PRD_DESCRICAO').AsString :=
@@ -1222,7 +1269,52 @@ begin
   Destino.FieldByName('COMPRAR').AsFloat :=
     Origem.FieldByName('COMPRAR').AsFloat;
   Destino.Post;
-  FProdutosPedidoIDs.Add(IntToStr(ID));
+  if FProdutosPedidoIDs.IndexOf(IntToStr(ID)) < 0 then
+    FProdutosPedidoIDs.Add(IntToStr(ID));
+  dbgProdCompra.Invalidate;
+end;
+
+procedure Tfrm_p.RemoverProdutoPedidoAtual;
+var
+  ID, Idx: Integer;
+begin
+  if not Assigned(FProdutosCompra) or not FProdutosCompra.Active or
+     FProdutosCompra.IsEmpty then Exit;
+  ID := FProdutosCompra.FieldByName('PRD_ID').AsInteger;
+  if FPedidoAtual.Active then
+  begin
+    if FPedidoAtual.State in [dsEdit, dsInsert] then FPedidoAtual.Cancel;
+    { varre o pedido inteiro e remove todas as linhas do produto }
+    FPedidoAtual.DisableControls;
+    try
+      FPedidoAtual.First;
+      while not FPedidoAtual.EOF do
+        if FPedidoAtual.FieldByName('PRD_ID').AsInteger = ID then
+          FPedidoAtual.Delete
+        else
+          FPedidoAtual.Next;
+    finally
+      FPedidoAtual.EnableControls;
+    end;
+  end;
+  Idx := FProdutosPedidoIDs.IndexOf(IntToStr(ID));
+  if Idx >= 0 then FProdutosPedidoIDs.Delete(Idx);
+
+  { normaliza a linha da sugestão: volta a quantidade sugerida }
+  Idx := FAlteracoesCompra.IndexOfName(IntToStr(ID));
+  if Idx >= 0 then FAlteracoesCompra.Delete(Idx);
+  FAtualizandoSugestao := True;
+  try
+    if FProdutosCompra.State in [dsEdit, dsInsert] then FProdutosCompra.Cancel;
+    FProdutosCompra.Edit;
+    FProdutosCompra.FieldByName('COMPRAR').AsFloat :=
+      FProdutosCompra.FieldByName('SUGERIDO').AsFloat;
+    FProdutosCompra.Post;
+  finally
+    FAtualizandoSugestao := False;
+  end;
+  dbgProdCompra.Invalidate;
+  dbgPedidoAtual.Invalidate;
 end;
 
 function Tfrm_p.ProdutoNoPedido(AProduto: Integer): Boolean;
@@ -1892,6 +1984,15 @@ begin
     Exit;
   end;
 
+  { Backspace = remove do pedido o item da linha atual }
+  if (Key = VK_BACK) and (Shift = []) and dbgProdCompra.Focused and
+     not dbgProdCompra.EditorMode then
+  begin
+    RemoverProdutoPedidoAtual;
+    Key := 0;
+    Exit;
+  end;
+
   { Ctrl + T = alterna tema claro/escuro }
   if (Key = Ord('T')) and (ssCtrl in Shift) then
   begin
@@ -1984,6 +2085,11 @@ begin
   begin
     AdicionarProdutoPedidoAtual;
     dbgPedidoAtual.Visible := True;
+    Key := 0;
+  end
+  else if (Key = VK_BACK) and (Shift = []) and not dbgProdCompra.EditorMode then
+  begin
+    RemoverProdutoPedidoAtual;
     Key := 0;
   end;
 end;
@@ -2307,6 +2413,7 @@ procedure Tfrm_p.dbgProdCompraDrawColumnCell(Sender: TObject;
   State: TGridDrawState);
 var
   LinhaComCompra: Boolean;
+  Fundo: TColor;
 begin
   if not Assigned(Column) or not Assigned(Column.Field) or
      not Assigned(Column.Field.DataSet) or
@@ -2319,11 +2426,24 @@ begin
   { linhas já incluídas no pedido ficam em vermelho e negrito }
   LinhaComCompra := ProdutoNoPedido(
     Column.Field.DataSet.FieldByName('PRD_ID').AsInteger);
+
+  { coluna da quantidade sugerida (Comprar): tom pastel vermelho }
+  if SameText(Column.FieldName, 'COMPRAR') then
+  begin
+    if Paleta.Superficie = RGBToColor(255, 255, 255) then
+      Fundo := RGBToColor(253, 226, 228)
+    else
+      Fundo := RGBToColor(74, 44, 50);
+  end
+  else
+    Fundo := clDefault;
+
   if LinhaComCompra then
     PintarCelulaModerna(dbgProdCompra, Rect, Column, State,
-      Paleta.Alerta, [fsBold])
+      Paleta.Alerta, [fsBold], 0, False, Fundo)
   else
-    PintarCelulaModerna(dbgProdCompra, Rect, Column, State);
+    PintarCelulaModerna(dbgProdCompra, Rect, Column, State, clDefault, [], 0,
+      False, Fundo);
 end;
 
 

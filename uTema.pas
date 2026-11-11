@@ -64,7 +64,7 @@ function Contraste(A, B: TColor): Double;
 procedure PintarCelulaModerna(AGrade: TCustomDBGrid; const ARect: TRect;
   AColuna: TColumn; AEstado: TGridDrawState; ACorTexto: TColor = clDefault;
   AEstilo: TFontStyles = []; ARecuoDireita: Integer = 0;
-  ASemTexto: Boolean = False);
+  ASemTexto: Boolean = False; AFundo: TColor = clDefault);
 
 { Faz as colunas preencherem a largura da grade; ACampos (separados por ;) 
   são as colunas que absorvem a sobra (as demais mantêm a largura). }
@@ -300,7 +300,8 @@ end;
 
 procedure PintarCelulaModerna(AGrade: TCustomDBGrid; const ARect: TRect;
   AColuna: TColumn; AEstado: TGridDrawState; ACorTexto: TColor;
-  AEstilo: TFontStyles; ARecuoDireita: Integer; ASemTexto: Boolean);
+  AEstilo: TFontStyles; ARecuoDireita: Integer; ASemTexto: Boolean;
+  AFundo: TColor);
 const
   RECUO = 10;
   RAIO = 14;
@@ -320,12 +321,14 @@ begin
     Exit;  { mantém o desenho padrão da grade }
 
   Cv := AGrade.Canvas;
-  Sel := gdSelected in AEstado;
   DS := Campo.DataSet;
+  Sel := (gdSelected in AEstado) and not
+    (Assigned(DS) and DS.Active and DS.IsEmpty);
   Par := Assigned(DS) and DS.Active and Odd(DS.RecNo);
 
   { fundo da linha }
-  if Par then Cv.Brush.Color := Paleta.Superficie
+  if AFundo <> clDefault then Cv.Brush.Color := AFundo
+  else if Par then Cv.Brush.Color := Paleta.Superficie
   else Cv.Brush.Color := Paleta.Zebra;
   Cv.FillRect(ARect);
 
@@ -361,6 +364,10 @@ begin
   end;
 
   if ASemTexto then Exit;
+
+  { dataset vazio: o campo ainda guarda o texto do último registro (linha
+    "fantasma"); a grade desenha uma linha em branco }
+  if Assigned(DS) and DS.Active and DS.IsEmpty then Exit;
 
   { texto: centralizado na vertical, com recuo e alinhamento da coluna }
   Cv.Brush.Style := bsClear;
