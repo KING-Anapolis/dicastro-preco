@@ -10,7 +10,8 @@ uses
   DBGrids, Grids, DBCtrls, ColorSpeedButton, DBGridsEh, DBCtrlsEh, PrnDbgeh,
   uDm, dxDBGridController, RxDBGrid, Variants, LCLType, ComCtrls, uFrmCadastro,
   uFuncoes, PrintersDlgs, DateTimePicker, DateUtils, Math, uConf, ZDataset,
-  ZAbstractRODataset, Types, BufDataset, Menus, IniFiles, uTema, uIcones;
+  ZAbstractRODataset, Types, BufDataset, Menus, IniFiles, uTema, uIcones,
+  uGrades;
 
 type
 
@@ -90,8 +91,6 @@ type
     procedure TabSheet2Show(Sender: TObject);
     procedure tmrAtualizacaoTimer(Sender: TObject);
     procedure dbgProdutosDblClick(Sender: TObject);
-    procedure MenuColunasPopup(Sender: TObject);
-    procedure MenuColunaClick(Sender: TObject);
     procedure dbgProdutosDrawColumnCell(Sender: TObject;
       const Rect: TRect; DataCol: Integer; Column: TColumn;
       State: TGridDrawState);
@@ -150,8 +149,7 @@ type
     FPedidoAtual: TBufDataset;
     FAlteracoesCompra: TStringList;
     FProdutosPedidoIDs: TStringList;
-    FMenuColunas: TPopupMenu;
-    FMenuAlvo: TDBGrid;
+    FGrades: TGerenciadorGrades;
     FTmrTrocaProduto: TTimer;
     FProdutoPendente: Integer;
     FCardFiltros: TPaintBox;
@@ -160,12 +158,15 @@ type
     procedure AplicarPreferencias;
 
     function ArquivoConfiguracaoGrid: String;
-    function ArquivoConfiguracaoColunasCompra: String;
+    function ArquivoLayoutGrades: String;
 
     procedure SalvarConfiguracao;
     procedure CarregarConfiguracao;
-    procedure SalvarVisibilidadeColunas(AGrid: TDBGrid);
-    procedure CarregarVisibilidadeColunas(AGrid: TDBGrid);
+    procedure ConfigurarGrades;
+    procedure GradeAjustar(AGrade: TCustomDBGrid);
+    procedure AjustarGrade(AGrade: TCustomDBGrid);
+    function GradeSubtitulo(AGrade: TCustomDBGrid): String;
+    procedure GradeMontarMenu(AGrade: TCustomDBGrid; AMenu: TPopupMenu);
 
     procedure AbrirDataSet(ADataSet: TDataSet);
     procedure ConfigurarFiltroStatus;
@@ -239,10 +240,10 @@ begin
   ) + 'dbgProdutos.ini';
 end;
 
-function Tfrm_p.ArquivoConfiguracaoColunasCompra: String;
+function Tfrm_p.ArquivoLayoutGrades: String;
 begin
   Result := IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) +
-    'dbgProdCompra.ini';
+    'grades.ini';
 end;
 
 
@@ -307,9 +308,9 @@ begin
     uDm.data.qryVendas.Open;
     FUltimoProdutoVendas := AProduto;
     if pgcSystem.ActivePage = TabSheet1 then
-      AutoSizeDBGridColumns(dbgVendas)
+      AjustarGrade(dbgVendas)
     else
-      AutoSizeGradePagina2(dbgProdVendas);
+      AjustarGrade(dbgProdVendas);
   finally
     FCarregandoHistorico := False;
   end;
@@ -337,180 +338,134 @@ end;
 procedure Tfrm_p.SalvarConfiguracao;
 begin
   {
-    A configuração visual do dbgProdutos pertence ao
-    dxDBGridController.
+    Largura, ordem e visibilidade de TODAS as grades pertencem ao
+    gerenciador de grades (grades.ini). Ele já grava a cada alteração do
+    usuário; aqui só garantimos o estado final no fechamento.
 
-    Não executamos AutoSize antes de salvar, pois queremos
-    preservar exatamente largura e posição definidas pelo usuário.
+    Não executamos AutoSize antes de salvar, pois queremos preservar
+    exatamente o que o usuário definiu.
   }
+  if Assigned(FGrades) then
+    FGrades.SalvarTudo;
+end;
 
-  if not Assigned(dxDBGridController1) then
-    Exit;
 
-  if not Assigned(dxDBGridController1.DBGrid) then
-    Exit;
+procedure Tfrm_p.ConfigurarGrades;
+begin
+  if Assigned(FGrades) then Exit;
+  FGrades := TGerenciadorGrades.Create(Self, ArquivoLayoutGrades);
+  FGrades.OnAjustar := @GradeAjustar;
+  FGrades.OnSubtitulo := @GradeSubtitulo;
+  FGrades.OnMontarMenu := @GradeMontarMenu;
+  FGrades.Registrar(dbgProdutos, 'Listagem de produtos', []);
+  FGrades.Registrar(dbgCompras, 'Histórico de compras', []);
+  FGrades.Registrar(dbgVendas, 'Histórico de vendas', []);
+  FGrades.Registrar(dbgProdCompra, 'Sugestão de compras',
+    ['PRD_DESCRICAO', 'COMPRAR']);
+  FGrades.Registrar(dbgProdVendas, 'Histórico de vendas', []);
+  FGrades.Registrar(dbgPedidoAtual, 'Pedido de compras', []);
+end;
 
-  try
-    dxDBGridController1.SaveConfiguration(
-      ArquivoConfiguracaoGrid
-    );
 
-    FConfiguracaoCarregada := True;
-  except
-    on E: Exception do
-      MessageDlg(
-        'Não foi possível salvar a configuração da grade.' +
-        LineEnding + LineEnding +
-        E.Message,
-        mtWarning,
-        [mbOK],
-        0
-      );
+{ Ajuste de largura de uma grade respeitando o que o usuário definiu. }
+procedure Tfrm_p.AjustarGrade(AGrade: TCustomDBGrid);
+begin
+  if Assigned(FGrades) then
+    FGrades.Ajustar(AGrade)
+  else
+    GradeAjustar(AGrade);
+end;
+
+{ Chamado pelo gerenciador: escolhe o ajuste automático adequado a cada grade. }
+procedure Tfrm_p.GradeAjustar(AGrade: TCustomDBGrid);
+begin
+  if AGrade is TRxDBGrid then
+    AutoSizeDBGridColumns(TRxDBGrid(AGrade))
+  else if AGrade = dbgProdutos then
+    AutoSizeSBGrid(dbgProdutos)
+  else
+    AutoSizeGradePagina2(AGrade as TDBGrid);
+end;
+
+{ Linha de contexto impressa abaixo do título da listagem. }
+function Tfrm_p.GradeSubtitulo(AGrade: TCustomDBGrid): String;
+var
+  Produto: String;
+begin
+  Result := '';
+  if (AGrade = dbgProdCompra) or (AGrade = dbgPedidoAtual) then
+  begin
+    if FPeriodoSugestao <> '' then
+      Result := 'Período: ' + FPeriodoSugestao;
+    if Trim(FFiltrosSugestao) <> '' then
+      Result := Result + '    ' + Trim(FFiltrosSugestao);
+  end
+  else if (AGrade = dbgCompras) or (AGrade = dbgVendas) or
+          (AGrade = dbgProdVendas) then
+  begin
+    if pgcSystem.ActivePage = TabSheet2 then
+      Produto := qryProdutosComprarPRD_DESCRICAO.AsString
+    else if uDm.data.qryProdutos.Active then
+      Produto := uDm.data.qryProdutos.FieldByName('PRD_DESCRICAO').AsString
+    else
+      Produto := '';
+    if Produto <> '' then
+      Result := 'Produto: ' + Produto;
+  end
+  else if AGrade = dbgProdutos then
+  begin
+    if FMostrarInativos then
+      Result := 'Inclui produtos inativos'
+    else
+      Result := 'Somente produtos ativos';
   end;
-  if Assigned(FProdutosCompra) and (dbgProdCompra.Columns.Count > 0) then
-    SalvarVisibilidadeColunas(dbgProdCompra);
+end;
+
+{ Itens específicos de cada grade, mostrados no topo do menu de contexto. }
+procedure Tfrm_p.GradeMontarMenu(AGrade: TCustomDBGrid; AMenu: TPopupMenu);
+var
+  Item: TMenuItem;
+begin
+  if AGrade <> dbgProdCompra then Exit;
+  if Assigned(FProdutosCompra) and FProdutosCompra.Active and
+     not FProdutosCompra.IsEmpty and
+     ProdutoNoPedido(FProdutosCompra.FieldByName('PRD_ID').AsInteger) then
+  begin
+    Item := TMenuItem.Create(AMenu);
+    Item.Caption := 'Excluir produto do pedido';
+    Item.OnClick := @MenuExcluirPedidoClick;
+    AMenu.Items.Add(Item);
+  end;
 end;
 
 
 procedure Tfrm_p.CarregarConfiguracao;
 begin
   FConfiguracaoCarregada := False;
-
-  if not Assigned(dxDBGridController1) then
-    Exit;
-
-  if not Assigned(dxDBGridController1.DBGrid) then
-    Exit;
+  ConfigurarGrades;
 
   {
-    Se ainda não existe configuração, fazemos AutoSize uma
-    única vez para fornecer um layout inicial adequado.
+    Migração: quem já usava a versão anterior tem as larguras do
+    dbgProdutos guardadas no arquivo do controller. Na primeira abertura
+    após a atualização elas são adotadas como as larguras do usuário.
   }
-  if not FileExists(ArquivoConfiguracaoGrid) then
+  if (not FGrades.TemLayoutSalvo(dbgProdutos)) and
+     FileExists(ArquivoConfiguracaoGrid) and
+     Assigned(dxDBGridController1) and
+     Assigned(dxDBGridController1.DBGrid) then
   begin
-    AutoSizeSBGrid(dbgProdutos);
-    if dbgProdCompra.Columns.Count > 0 then
-      CarregarVisibilidadeColunas(dbgProdCompra);
-    Exit;
-  end;
-
-  try
-    dxDBGridController1.LoadConfiguration(
-      ArquivoConfiguracaoGrid
-    );
-
-    {
-      Queremos manter largura, posição e demais propriedades
-      visuais, mas iniciar sem filtros e ordenações anteriores.
-    }
-    dxDBGridController1.ClearAllFilters;
-    dxDBGridController1.ClearSort;
-
-    FConfiguracaoCarregada := True;
-
-  except
-    on E: Exception do
-    begin
-      {
-        Se o INI estiver inválido/corrompido, não impedimos
-        a abertura do formulário.
-      }
-
-      FConfiguracaoCarregada := False;
-
-      AutoSizeSBGrid(dbgProdutos);
-
-      MessageDlg(
-        'A configuração salva da grade não pôde ser carregada.' +
-        LineEnding + LineEnding +
-        'Será utilizado o layout padrão.' +
-        LineEnding + LineEnding +
-        E.Message,
-        mtWarning,
-        [mbOK],
-        0
-      );
+    try
+      dxDBGridController1.LoadConfiguration(ArquivoConfiguracaoGrid);
+      dxDBGridController1.ClearAllFilters;
+      dxDBGridController1.ClearSort;
+      FGrades.AdotarLayoutAtual(dbgProdutos);
+    except
+      { arquivo antigo inválido: segue com o layout padrão }
     end;
   end;
-  if dbgProdCompra.Columns.Count > 0 then
-    CarregarVisibilidadeColunas(dbgProdCompra);
-end;
 
-procedure Tfrm_p.SalvarVisibilidadeColunas(AGrid: TDBGrid);
-var
-  Ini: TIniFile;
-  I: Integer;
-  Secao: String;
-begin
-  if not Assigned(AGrid) then Exit;
-  Secao := 'Colunas.' + AGrid.Name;
-  Ini := TIniFile.Create(ArquivoConfiguracaoColunasCompra);
-  try
-    for I := 0 to AGrid.Columns.Count - 1 do
-      Ini.WriteBool(Secao, AGrid.Columns[I].FieldName,
-        AGrid.Columns[I].Visible);
-  finally
-    Ini.Free;
-  end;
-end;
-
-procedure Tfrm_p.CarregarVisibilidadeColunas(AGrid: TDBGrid);
-var
-  Ini: TIniFile;
-  I: Integer;
-  Secao: String;
-begin
-  if not Assigned(AGrid) or
-     not FileExists(ArquivoConfiguracaoColunasCompra) then Exit;
-  Secao := 'Colunas.' + AGrid.Name;
-  Ini := TIniFile.Create(ArquivoConfiguracaoColunasCompra);
-  try
-    for I := 0 to AGrid.Columns.Count - 1 do
-      if Ini.ValueExists(Secao, AGrid.Columns[I].FieldName) then
-        AGrid.Columns[I].Visible := Ini.ReadBool(Secao,
-          AGrid.Columns[I].FieldName, True);
-  finally
-    Ini.Free;
-  end;
-end;
-
-procedure Tfrm_p.MenuColunasPopup(Sender: TObject);
-var
-  I: Integer;
-  Item: TMenuItem;
-begin
-  FMenuAlvo := nil;
-  FMenuColunas.Items.Clear;
-  if not (FMenuColunas.PopupComponent is TDBGrid) then Exit;
-  FMenuAlvo := TDBGrid(FMenuColunas.PopupComponent);
-  if FMenuAlvo <> dbgProdCompra then Exit;
-
-  if Assigned(FProdutosCompra) and FProdutosCompra.Active and
-     not FProdutosCompra.IsEmpty and
-     ProdutoNoPedido(FProdutosCompra.FieldByName('PRD_ID').AsInteger) then
-  begin
-    Item := TMenuItem.Create(FMenuColunas);
-    Item.Caption := 'Excluir produto do pedido';
-    Item.OnClick := @MenuExcluirPedidoClick;
-    FMenuColunas.Items.Add(Item);
-    Item := TMenuItem.Create(FMenuColunas);
-    Item.Caption := '-';
-    FMenuColunas.Items.Add(Item);
-  end;
-
-  for I := 0 to FMenuAlvo.Columns.Count - 1 do
-  begin
-    Item := TMenuItem.Create(FMenuColunas);
-    Item.Caption := FMenuAlvo.Columns[I].Title.Caption;
-    Item.Checked := FMenuAlvo.Columns[I].Visible;
-    Item.AutoCheck := True;
-    Item.Tag := I;
-    Item.OnClick := @MenuColunaClick;
-    Item.Enabled := not SameText(FMenuAlvo.Columns[I].FieldName,
-      'PRD_DESCRICAO') and
-      not SameText(FMenuAlvo.Columns[I].FieldName, 'COMPRAR');
-    FMenuColunas.Items.Add(Item);
-  end;
+  FGrades.Ajustar(dbgProdutos);
+  FConfiguracaoCarregada := True;
 end;
 
 procedure Tfrm_p.MenuExcluirPedidoClick(Sender: TObject);
@@ -531,26 +486,6 @@ begin
   if (Linha >= TGradeMouse(dbgProdCompra).FixedRows) and
      (Linha <> TGradeMouse(dbgProdCompra).Row) then
     FProdutosCompra.MoveBy(Linha - TGradeMouse(dbgProdCompra).Row);
-end;
-
-procedure Tfrm_p.MenuColunaClick(Sender: TObject);
-var
-  Item: TMenuItem;
-  Campo: String;
-begin
-  if not Assigned(FMenuAlvo) or not (Sender is TMenuItem) then Exit;
-  Item := TMenuItem(Sender);
-  if (Item.Tag < 0) or (Item.Tag >= FMenuAlvo.Columns.Count) then Exit;
-  Campo := FMenuAlvo.Columns[Item.Tag].FieldName;
-  if SameText(Campo, 'PRD_DESCRICAO') or
-     SameText(Campo, 'COMPRAR') then
-  begin
-    Item.Checked := True;
-    Exit;
-  end;
-  FMenuAlvo.Columns[Item.Tag].Visible := Item.Checked;
-  SalvarVisibilidadeColunas(FMenuAlvo);
-  FMenuAlvo.Invalidate;
 end;
 
 
@@ -641,10 +576,10 @@ begin
     essa persistência pelo dxDBGridController.
   }
 
-  AutoSizeDBGridColumns(dbgCompras);
-  AutoSizeDBGridColumns(dbgVendas);
-  AutoSizeGradePagina2(dbgProdCompra);
-  AutoSizeGradePagina2(dbgProdVendas);
+  AjustarGrade(dbgCompras);
+  AjustarGrade(dbgVendas);
+  AjustarGrade(dbgProdCompra);
+  AjustarGrade(dbgProdVendas);
 
   dbgProdutos.Invalidate;
   dbgCompras.Invalidate;
@@ -930,7 +865,7 @@ begin
       if Pos('DESCRICAO', UpperCase(AGrid.Columns[I].FieldName)) > 0 then
       begin
         Minimos[I] := 160;
-        Descricao := I;
+        if AGrid.Columns[I].Visible then Descricao := I;
       end
       else if Assigned(Campo) and (Campo.DataType in
         [ftSmallint, ftInteger, ftLargeint, ftFloat, ftCurrency,
@@ -967,7 +902,8 @@ begin
     Disponivel := AGrid.ClientWidth - 36;
     if Disponivel < 0 then Disponivel := 0;
     Total := 0;
-    for I := 0 to N - 1 do Inc(Total, Larguras[I]);
+    for I := 0 to N - 1 do
+      if AGrid.Columns[I].Visible then Inc(Total, Larguras[I]);
     Excesso := Total - Disponivel;
     if Excesso > 0 then
     begin
@@ -978,7 +914,7 @@ begin
         Dec(Excesso, Largura);
       end;
       for I := 0 to N - 1 do
-        if (Excesso > 0) and (I <> Descricao) then
+        if (Excesso > 0) and (I <> Descricao) and AGrid.Columns[I].Visible then
         begin
           Largura := Min(Excesso, Larguras[I] - Minimos[I]);
           Dec(Larguras[I], Largura);
@@ -1022,7 +958,7 @@ begin
     uDm.data.qryCompras.ParamByName('LIMITE').AsInteger := FLinhasHistorico;
     uDm.data.qryCompras.Open;
     FUltimoProdutoCompras := AProduto;
-    AutoSizeDBGridColumns(dbgCompras);
+    AjustarGrade(dbgCompras);
   end;
 
   CarregarVendasProduto(AProduto, AForcarHistorico);
@@ -1035,12 +971,13 @@ begin
   FInicializando := True;
   InicializarProdutosCompra;
   ModernizarInterface;
-  if not Assigned(FMenuColunas) then
+  if not Assigned(FGrades) then
   begin
-    FMenuColunas := TPopupMenu.Create(Self);
-    FMenuColunas.OnPopup := @MenuColunasPopup;
-    dbgProdCompra.PopupMenu := FMenuColunas;
+    ConfigurarGrades;
     dbgProdCompra.OnMouseDown := @dbgProdCompraMouseDown;
+    edtProdutoCompra.ShowHint := True;
+    edtProdutoCompra.Hint := 'Sem % busca pelo início do nome. Use % como no SQL:' +
+      LineEnding + '%café% (contém)  |  %café (termina com)  |  ca%fé';
   end;
   FUltimoProdutoVendas := -1;
   FUltimoProdutoCompras := -1;
@@ -1644,7 +1581,8 @@ begin
       qryProdutosComprar.ParamByName('DESC').Clear
     end
     else
-      qryProdutosComprar.ParamByName('DESC').AsString := Trim(edtProdutoCompra.Text);
+      qryProdutosComprar.ParamByName('DESC').AsString :=
+        PadraoBuscaLike(edtProdutoCompra.Text);
 
     AplicarFiltroLookup(dbGrupoCompra, 'GRU');
     AplicarFiltroLookup(dbSubGrupoCompra, 'SUBG');
@@ -1728,8 +1666,8 @@ begin
     qryProdutosComprar.EnableControls;
     FAtualizandoSugestao := False;
   end;
-  AutoSizeGradePagina2(dbgProdCompra);
-  AutoSizeGradePagina2(dbgPedidoAtual);
+  AjustarGrade(dbgProdCompra);
+  AjustarGrade(dbgPedidoAtual);
   AtualizarVendasPaginaAtiva;
 end;
 

@@ -2532,7 +2532,7 @@ object frm_p: Tfrm_p
       '-- PRODUTOS_ZERO=1 mostra todos; =0 mostra apenas vendidos acima do estoque.'
       'WHERE'
       '    (CAST(:DESC AS VARCHAR(255)) IS NULL'
-      '        OR P.PRD_DESCRICAO STARTING WITH :DESC)'
+      '        OR P.PRD_DESCRICAO LIKE :DESC)'
       '    AND (CAST(:FOR AS INTEGER) IS NULL'
       '        OR P.PRD_FORNECEDOR = :FOR)'
       '    AND (CAST(:GRU AS INTEGER) IS NULL'

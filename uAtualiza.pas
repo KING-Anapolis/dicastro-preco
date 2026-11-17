@@ -27,7 +27,7 @@ unit uAtualiza;
 interface
 
 const
-  APP_VERSAO = '3.0.2';
+  APP_VERSAO = '3.0.3';
   REPO_PADRAO = 'KING-Anapolis/dicastro-preco';
 
 var
@@ -741,12 +741,12 @@ end;
 function NovidadesDaVersao: string;
 begin
   Result :=
-    'Sugestão de compra: coluna de quantidade destacada' + LineEnding +
-    'Espaço em item já lançado atualiza a quantidade' + LineEnding +
-    'Backspace remove o item do pedido de compra' + LineEnding +
-    'Botão direito na linha: excluir do pedido' + LineEnding +
-    'Ao excluir, a quantidade volta ao valor sugerido' + LineEnding +
-    'Corrigido erro ao lançar o mesmo item novamente';
+    'Botão direito em todas as grades: colunas, exportar e imprimir' + LineEnding +
+    'Largura e ordem das colunas ficam salvas ao fechar' + LineEnding +
+    'Ajuste automático opcional, sem travar a largura manual' + LineEnding +
+    'Listagens em PDF (retrato ou paisagem) e Excel' + LineEnding +
+    'Busca por nome na sugestão aceita % como no SQL' + LineEnding +
+    'Colunas ocultas não ocupam mais espaço na grade';
 end;
 
 var

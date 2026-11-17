@@ -173,6 +173,16 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uIcones"/>
       </Unit>
+      <Unit>
+        <Filename Value="ugrades.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uGrades"/>
+      </Unit>
+      <Unit>
+        <Filename Value="ugradeexport.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uGradeExport"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

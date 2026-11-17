@@ -8,17 +8,6 @@ interface
 uses
   Classes, SysUtils, DB;
 
-procedure ExportarComprasPDF(ADados: TDataSet;
-  const AArquivo, APeriodo, ALogo: String);
-procedure ExportarComprasExcel(ADados: TDataSet;
-  const AArquivo, APeriodo: String);
-
-implementation
-
-uses
-  Graphics, Controls, Math, BufDataset, ZDataset, uDm, RLReport, RLTypes,
-  RLPDFFilter, fpspreadsheet, fpstypes, fpsallformats;
-
 type
   TEmpresaCabecalho = record
     Razao: String;
@@ -30,6 +19,18 @@ type
     Estado: String;
     Logo: TMemoryStream;
   end;
+
+procedure BuscarEmpresa(out AEmpresa: TEmpresaCabecalho);
+procedure ExportarComprasPDF(ADados: TDataSet;
+  const AArquivo, APeriodo, ALogo: String);
+procedure ExportarComprasExcel(ADados: TDataSet;
+  const AArquivo, APeriodo: String);
+
+implementation
+
+uses
+  Graphics, Controls, Math, BufDataset, ZDataset, uDm, RLReport, RLTypes,
+  RLPDFFilter, fpspreadsheet, fpstypes, fpsallformats;
 
 procedure BuscarEmpresa(out AEmpresa: TEmpresaCabecalho);
 var
