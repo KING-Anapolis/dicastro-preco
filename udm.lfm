@@ -1029,10 +1029,11 @@ object data: Tdata
       '      I.pevi_quantidade AS QTD,'
       '      I.pevi_un_venda AS UN,'
       '      I.pevi_valor_unitario AS VR_UN,'
+      '      CAST(I.PEVI_VALOR_CUSTO_UNITARIO AS NUMERIC(15,4)) AS CUSTO,'
       '      I.pevi_valor_desconto AS DESCONTO,'
       '      I.pevi_valor_total AS TOTAL,'
-      '      CAST(CASE WHEN COALESCE(I.PEVI_CUSTO_UN, 0) > 0'
-      '        THEN ((I.pevi_valor_unitario - I.PEVI_CUSTO_UN) / I.PEVI_CUSTO_UN) * 100'
+      '      CAST(CASE WHEN COALESCE(I.PEVI_VALOR_CUSTO_UNITARIO, 0) > 0'
+      '        THEN ((I.pevi_valor_unitario - I.PEVI_VALOR_CUSTO_UNITARIO) / I.PEVI_VALOR_CUSTO_UNITARIO) * 100'
       '        ELSE NULL END AS NUMERIC(15,6)) AS MARKUP'
       '    FROM TB_PEDIDO_VENDA_ITEM I'
       '    LEFT JOIN TB_PEDIDO_VENDA V ON V.pev_id = I.pevi_pedido_venda'
@@ -1140,11 +1141,25 @@ object data: Tdata
       MinValue = '0'
       Size = 6
     end
+    object qryVendasCUSTO: TZBCDField
+      DisplayLabel = 'R$ Custo'
+      FieldKind = fkData
+      FieldName = 'CUSTO'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = True
+      Required = False
+      Precision = 15
+      Currency = True
+      MaxValue = 0
+      MinValue = 0
+    end
     object qryVendasDESCONTO: TZBCDField
       DisplayLabel = 'R$ Desconto'
       FieldKind = fkData
       FieldName = 'DESCONTO'
-      Index = 7
+      Index = 8
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1158,7 +1173,7 @@ object data: Tdata
       DisplayLabel = 'R$ Total'
       FieldKind = fkData
       FieldName = 'TOTAL'
-      Index = 8
+      Index = 9
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -1172,7 +1187,7 @@ object data: Tdata
       DisplayLabel = 'Markup %'
       FieldKind = fkData
       FieldName = 'MARKUP'
-      Index = 9
+      Index = 10
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = True

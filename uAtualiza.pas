@@ -27,7 +27,7 @@ unit uAtualiza;
 interface
 
 const
-  APP_VERSAO = '3.0.5';
+  APP_VERSAO = '3.0.6';
   REPO_PADRAO = 'KING-Anapolis/dicastro-preco';
 
 var
@@ -741,7 +741,7 @@ end;
 function NovidadesDaVersao: string;
 begin
   Result :=
-    'Markup do histórico de vendas agora usa o custo registrado em cada venda';
+    'Histórico de vendas mostra o custo da data da venda e calcula o markup sobre ele';
 end;
 
 var

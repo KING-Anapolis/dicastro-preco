@@ -219,6 +219,7 @@ type
     qryVendasQTD: TZFMTBCDField;
     qryVendasTOTAL: TZBCDField;
     qryVendasMARKUP: TZFMTBCDField;
+    qryVendasCUSTO: TZBCDField;
     qryVendasUN: TZRawStringField;
     qryVendasVENDEDOR: TZRawStringField;
     qryVendasVR_UN: TZFMTBCDField;
