@@ -3003,6 +3003,18 @@ object frm_login: Tfrm_login
         OnKeyPress = edt_senhaKeyPress
       end
     end
+    object ck_lembrar: TCheckBox
+      Cursor = crHandPoint
+      Left = 408
+      Height = 19
+      Top = 287
+      Width = 300
+      Caption = 'Lembrar do último usuário'
+      Font.Color = clGray
+      Font.Height = -13
+      ParentFont = False
+      TabOrder = 3
+    end
     object btn_entrar: TColorSpeedButton
       Cursor = crHandPoint
       Left = 568

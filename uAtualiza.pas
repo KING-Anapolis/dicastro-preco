@@ -27,7 +27,7 @@ unit uAtualiza;
 interface
 
 const
-  APP_VERSAO = '3.0.3';
+  APP_VERSAO = '3.0.4';
   REPO_PADRAO = 'KING-Anapolis/dicastro-preco';
 
 var
@@ -741,12 +741,12 @@ end;
 function NovidadesDaVersao: string;
 begin
   Result :=
-    'Botão direito em todas as grades: colunas, exportar e imprimir' + LineEnding +
-    'Largura e ordem das colunas ficam salvas ao fechar' + LineEnding +
-    'Ajuste automático opcional, sem travar a largura manual' + LineEnding +
-    'Listagens em PDF (retrato ou paisagem) e Excel' + LineEnding +
-    'Busca por nome na sugestão aceita % como no SQL' + LineEnding +
-    'Colunas ocultas não ocupam mais espaço na grade';
+    'Histórico de compras mostra o custo com frete e custos adicionais' + LineEnding +
+    'Setas indicam se o custo subiu, baixou ou ficou igual' + LineEnding +
+    'Compras feitas por pedido e nota agora aparecem no histórico' + LineEnding +
+    'Opção "Lembrar do último usuário" na tela de login' + LineEnding +
+    'Botão nas configurações para esquecer o login lembrado' + LineEnding +
+    'Colunas da grade de produtos podem ser redimensionadas livremente';
 end;
 
 var

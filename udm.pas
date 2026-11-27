@@ -141,6 +141,7 @@ type
     qryRegistroDATA: TZDateTimeField;
     qryRegistroUSUARIO: TZRawStringField;
     qryVendas: TZQuery;
+    qryComprasCUSTO: TZBCDField;
     qryComprasDESCONTO: TZBCDField;
     qryComprasEMISSAO: TZDateField;
     qryComprasFORNECEDOR: TZRawStringField;
@@ -149,6 +150,7 @@ type
     qryComprasTOTAL: TZBCDField;
     qryComprasUN: TZRawStringField;
     qryComprasVR_UN: TZFMTBCDField;
+    qryComprasVARIACAO: TZRawStringField;
     qryFornecedorPES_RSOCIAL_NOME: TZRawStringField;
     qryFornecedorPRD_FORNECEDOR: TZIntegerField;
     qryProdutos: TZQuery;

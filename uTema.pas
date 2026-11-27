@@ -809,7 +809,10 @@ begin
 end;
 
 { ACampos: nomes separados por ';' em ordem de prioridade; o primeiro
-  absorve mais da sobra de largura. As demais colunas mantêm a largura. }
+  absorve mais da sobra de largura. As demais colunas mantêm a largura.
+  Em grades registradas no TGerenciadorGrades o AutoFillColumns ligado aqui
+  é só um sinal: o gerenciador o desliga e preenche a largura sob demanda,
+  para não prender as colunas que o usuário redimensiona. }
 procedure PreencherColunas(AGrade: TCustomDBGrid; const ACampos: String);
 var
   G: TGradeAcesso;

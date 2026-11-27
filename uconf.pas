@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  Spin, ColorSpeedButton, LCLIntf, uFuncoes, uTema;
+  Spin, ColorSpeedButton, LCLIntf, uFuncoes, uTema, uLembrarLogin;
 
 type
 
@@ -29,7 +29,10 @@ type
     procedure Panel3Click(Sender: TObject);
   private
     FBtnSalvar: TColorSpeedButton;
+    FBtnEsquecer: TColorSpeedButton;
     procedure Modernizar;
+    procedure AtualizarBotaoEsquecer;
+    procedure EsquecerClick(Sender: TObject);
 
   public
 
@@ -87,13 +90,58 @@ begin
     FBtnSalvar.OnClick := @Panel3Click;
     Panel3.Visible := False;
   end;
+  if FBtnEsquecer = nil then
+  begin
+    FBtnEsquecer := TColorSpeedButton.Create(Self);
+    FBtnEsquecer.Parent := Panel1;
+    FBtnEsquecer.SetBounds(8, Panel3.Top, FBtnSalvar.Left - 16, Panel3.Height);
+    FBtnEsquecer.Caption := 'ESQUECER LOGIN';
+    FBtnEsquecer.Cursor := crHandPoint;
+    FBtnEsquecer.ShowHint := True;
+    FBtnEsquecer.OnClick := @EsquecerClick;
+  end;
   AplicarTema(Self);
+end;
+
+procedure TfrmConf.AtualizarBotaoEsquecer;
+var
+  Usuario: String;
+begin
+  if FBtnEsquecer = nil then Exit;
+  Usuario := UsuarioLembrado;
+  FBtnEsquecer.Enabled := Usuario <> '';
+  if Usuario <> '' then
+    FBtnEsquecer.Hint := 'Usuário lembrado: ' + Usuario + LineEnding +
+      'Clique para voltar a pedir usuário e senha ao abrir o sistema.'
+  else
+    FBtnEsquecer.Hint := 'Nenhum usuário lembrado.';
+end;
+
+procedure TfrmConf.EsquecerClick(Sender: TObject);
+var
+  Usuario: String;
+begin
+  Usuario := UsuarioLembrado;
+  if Usuario = '' then Exit;
+  if MessageDlg('Esquecer login',
+       'O sistema está entrando automaticamente com o usuário ' + Usuario +
+       '.' + LineEnding + LineEnding +
+       'Deseja esquecer esse login? Na próxima abertura serão pedidos ' +
+       'usuário e senha, até alguém marcar "Lembrar do último usuário" ' +
+       'novamente.', mtConfirmation, [mbYes, mbNo], 0) <> mrYes then Exit;
+  EsquecerLoginLembrado;
+  GravaLog('Login lembrado de ' + Usuario + ' apagado nas configurações.',
+    'INFO');
+  AtualizarBotaoEsquecer;
+  MessageDlg('Esquecer login', 'Pronto. Na próxima abertura o login e a ' +
+    'senha serão pedidos.', mtInformation, [mbOK], 0);
 end;
 
 procedure TfrmConf.FormShow(Sender: TObject);
 begin
   SetWindowRgn(Handle, CreateRoundRectRgn(0, 0, Width + 1, Height + 1, 20, 20), True);
   AplicarTema(Self);
+  AtualizarBotaoEsquecer;
       SpinEdit1.Value :=
       StrToIntDef(
         PLerINI(

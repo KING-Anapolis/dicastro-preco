@@ -37,6 +37,7 @@ type
     AutoAjuste: Boolean;
     LayoutAplicado: Boolean;
     Ocupado: Boolean;
+    Preencher: Boolean;       { estica a coluna principal até a borda }
     Bloqueadas: TStringList;  { colunas que não podem ser ocultadas }
     Manuais: TStringList;     { colunas cuja largura o usuário definiu }
     Larguras: TStringList;    { Campo=Largura da última vez conhecida }
@@ -64,6 +65,8 @@ type
     procedure GuardarLarguras(AItem: TGradeItem);
     procedure Salvar(AItem: TGradeItem);
     procedure AjustarPreservandoManuais(AItem: TGradeItem);
+    procedure AssumirPreenchimento(AItem: TGradeItem);
+    procedure PreencherLargura(AItem: TGradeItem);
     function ColunaPorCampo(AItem: TGradeItem; const ACampo: String): TColumn;
     function Bloqueada(AItem: TGradeItem; const ACampo: String): Boolean;
     function TotalVisiveis(AItem: TGradeItem): Integer;
@@ -93,6 +96,9 @@ type
     procedure Ajustar(AGrade: TCustomDBGrid; AForcar: Boolean = False);
     { Usa o layout que a grade tem agora como o do usuário (migração). }
     procedure AdotarLayoutAtual(AGrade: TCustomDBGrid);
+    { Chamar quando a grade mudar de tamanho: no modo automático e sem
+      larguras manuais, estica de novo a coluna principal até a borda. }
+    procedure GradeRedimensionada(AGrade: TCustomDBGrid);
     function TemLayoutSalvo(AGrade: TCustomDBGrid): Boolean;
     procedure SalvarTudo;
     property OnAjustar: TGradeAjusteEvent read FOnAjustar write FOnAjustar;
@@ -294,7 +300,7 @@ procedure TGerenciadorGrades.AplicarLayout(AItem: TGradeItem);
 var
   Ini: TIniFile;
   Ordem: TStringList;
-  Col: TColumn;
+  Col, Anterior: TColumn;
   Larg, I, Pos: Integer;
   S: String;
 begin
@@ -318,6 +324,27 @@ begin
       Col.Index := Pos;
       Inc(Pos);
     end;
+
+    { colunas criadas depois que o layout foi salvo (versão nova): entram
+      logo após a coluna que as precede no layout de fábrica, e não no fim }
+    if Ordem.Count > 0 then
+      for I := 0 to AItem.Padrao.Count - 1 do
+      begin
+        if Ordem.IndexOf(AItem.Padrao.Names[I]) >= 0 then Continue;
+        Col := ColunaPorCampo(AItem, AItem.Padrao.Names[I]);
+        if Col = nil then Continue;
+        if I = 0 then
+          Col.Index := 0
+        else
+        begin
+          Anterior := ColunaPorCampo(AItem, AItem.Padrao.Names[I - 1]);
+          if Anterior <> nil then
+            if Anterior.Index < Col.Index then
+              Col.Index := Anterior.Index + 1
+            else
+              Col.Index := Anterior.Index;
+        end;
+      end;
 
     for I := 0 to ColunasDe(AItem.Grade).Count - 1 do
     begin
@@ -410,6 +437,48 @@ begin
   end;
 end;
 
+{ O AutoFillColumns do LCL redistribui as larguras a cada mudança e prende a
+  coluna que o usuário tenta esticar/encolher. O gerenciador assume esse papel:
+  desliga o recurso e só preenche a largura sob demanda (uma vez). }
+procedure TGerenciadorGrades.AssumirPreenchimento(AItem: TGradeItem);
+begin
+  if TGradeAcesso(AItem.Grade).AutoFillColumns then
+  begin
+    AItem.Preencher := True;
+    TGradeAcesso(AItem.Grade).AutoFillColumns := False;
+  end;
+end;
+
+procedure TGerenciadorGrades.PreencherLargura(AItem: TGradeItem);
+var
+  G: TGradeAcesso;
+begin
+  if not (AItem.Preencher and AItem.AutoAjuste and AItem.LayoutAplicado) then
+    Exit;
+  if AItem.Manuais.Count > 0 then Exit;
+  G := TGradeAcesso(AItem.Grade);
+  if not G.HandleAllocated or (G.ClientWidth <= 0) then Exit;
+  { liga e desliga: o LCL calcula as larguras uma vez e elas ficam fixas }
+  G.AutoFillColumns := True;
+  G.AutoFillColumns := False;
+end;
+
+procedure TGerenciadorGrades.GradeRedimensionada(AGrade: TCustomDBGrid);
+var
+  Item: TGradeItem;
+begin
+  Item := Achar(AGrade);
+  if (Item = nil) or Item.Ocupado then Exit;
+  AssumirPreenchimento(Item);
+  Item.Ocupado := True;
+  try
+    PreencherLargura(Item);
+    GuardarLarguras(Item);
+  finally
+    Item.Ocupado := False;
+  end;
+end;
+
 procedure TGerenciadorGrades.Ajustar(AGrade: TCustomDBGrid; AForcar: Boolean);
 var
   Item: TGradeItem;
@@ -420,6 +489,7 @@ begin
     if Assigned(FOnAjustar) then FOnAjustar(AGrade);
     Exit;
   end;
+  AssumirPreenchimento(Item);
   GarantirColunas(Item);
   if ColunasDe(AGrade).Count = 0 then Exit;
   if Item.Ocupado then Exit;
@@ -432,7 +502,10 @@ begin
     end;
     if AForcar then Item.Manuais.Clear;
     if Item.AutoAjuste or AForcar then
+    begin
       AjustarPreservandoManuais(Item);
+      PreencherLargura(Item);
+    end;
     GuardarLarguras(Item);
   finally
     Item.Ocupado := False;

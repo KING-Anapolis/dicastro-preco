@@ -736,8 +736,20 @@ object data: Tdata
   object qryCompras: TZQuery
     Connection = zCon
     SQL.Strings = (
-      'SELECT FIRST :LIMITE *'
+      'SELECT FIRST :LIMITE'
+      '  X.DEVOLUCAO, X.ORIGEM, X.NUMERO, X.EMISSAO, X.FORNECEDOR, X.QTD, X.UN,'
+      '  X.VR_UN, X.CUSTO, X.DESCONTO, X.TOTAL,'
+      '  CAST(CASE'
+      '    WHEN X.CUSTO IS NULL OR X.CUSTO_ANT IS NULL THEN NULL'
+      '    WHEN X.CUSTO > X.CUSTO_ANT THEN ''S'''
+      '    WHEN X.CUSTO < X.CUSTO_ANT THEN ''D'''
+      '    ELSE ''I'' END AS CHAR(1)) AS VARIACAO'
       'FROM'
+      '('
+      '  SELECT Y.*,'
+      '    LAG(Y.CUSTO) OVER (PARTITION BY IIF(Y.CUSTO IS NULL, 0, 1)'
+      '                       ORDER BY Y.EMISSAO, Y.NUMERO) AS CUSTO_ANT'
+      '  FROM'
       '('
       '    SELECT'
       '      '''' AS DEVOLUCAO,'
@@ -748,6 +760,23 @@ object data: Tdata
       '      I.nfi_qtde_estoque AS QTD,'
       '      p.PRD_UN_VENDA AS UN,'
       '      I.NFI_VALOR_SUB_TOTAL / I.nfi_qtde_estoque AS VR_UN,'
+      '      CAST(COALESCE('
+      '        (SELECT FIRST 1 COALESCE(NULLIF(PC.PRDC_PRECO_CUSTO_NOVO, 0), PC.PRDC_PRECO_CUSTO_LIQ)'
+      '            FROM TB_PRODUTO_CUSTO PC'
+      '            WHERE PC.PRDC_EMPRESA = I.NFI_EMPRESA'
+      '              AND PC.PRDC_PRODUTO = I.NFI_PRODUTO'
+      '              AND PC.PRDC_ORIGEM = ''NF.REC'''
+      '              AND PC.PRDC_ORIGEM_ID = I.NFI_NOTA_FISCAL'
+      '              AND PC.PRDC_ORIGEM_ITEM = I.NFI_SEQUENCIA'
+      '            ORDER BY PC.PRDC_SEQUENCIA DESC),'
+      '        (SELECT FIRST 1 COALESCE(NULLIF(PC.PRDC_PRECO_CUSTO_NOVO, 0), PC.PRDC_PRECO_CUSTO_LIQ)'
+      '            FROM TB_PRODUTO_CUSTO PC'
+      '            WHERE PC.PRDC_EMPRESA = I.NFI_EMPRESA'
+      '              AND PC.PRDC_PRODUTO = I.NFI_PRODUTO'
+      '              AND PC.PRDC_ORIGEM = ''COMPRA'''
+      '              AND PC.PRDC_ORIGEM_ID = N.NF_PEDIDO_COMPRA'
+      '            ORDER BY IIF(PC.PRDC_ORIGEM_ITEM = I.NFI_SEQUENCIA, 0, 1),'
+      '                     PC.PRDC_SEQUENCIA DESC)) AS NUMERIC(15,2)) AS CUSTO,'
       '      I.nfi_valor_desconto AS DESCONTO,'
       '      I.nfi_valor_total AS TOTAL'
       '    FROM tb_nota_fiscal_item I'
@@ -756,7 +785,6 @@ object data: Tdata
       '    LEFT JOIN TB_PRODUTO P ON P.PRD_ID = i.NFI_PRODUTO'
       '    WHERE N.nf_status = ''N'''
       '      AND I.nfi_produto = :PRODUTO'
-      '      and n.nf_pedido_compra is null'
       ''
       '    UNION ALL'
       ''
@@ -769,6 +797,14 @@ object data: Tdata
       '      IC.pdci_qtde_recebida AS QTD,'
       '      IC.pdci_unidade AS UN,'
       '      IC.pdci_valor_unitario AS VR_UN,'
+      '      CAST((SELECT FIRST 1 COALESCE(NULLIF(PC.PRDC_PRECO_CUSTO_NOVO, 0), PC.PRDC_PRECO_CUSTO_LIQ)'
+      '            FROM TB_PRODUTO_CUSTO PC'
+      '            WHERE PC.PRDC_EMPRESA = IC.PDCI_EMPRESA'
+      '              AND PC.PRDC_PRODUTO = IC.PDCI_PRODUTO'
+      '              AND PC.PRDC_ORIGEM = ''COMPRA'''
+      '              AND PC.PRDC_ORIGEM_ID = IC.PDCI_PEDIDO_COMPRA'
+      '              AND PC.PRDC_ORIGEM_ITEM = IC.PDCI_SEQUENCIA'
+      '            ORDER BY PC.PRDC_SEQUENCIA DESC) AS NUMERIC(15,2)) AS CUSTO,'
       '      IC.pdci_desconto AS DESCONTO,'
       '      IC.pdci_valor_recebido AS TOTAL'
       '    FROM tb_pedido_compra_item IC'
@@ -776,7 +812,10 @@ object data: Tdata
       '    LEFT JOIN TB_PESSOA F ON F.pes_id = C.pdc_fornecedor'
       '    WHERE C.pdc_status = ''R'''
       '      AND IC.pdci_produto = :PRODUTO'
-      '      and c.pdc_nota_fiscal is null'
+      '      AND NOT EXISTS (SELECT 1 FROM TB_NOTA_FISCAL NP'
+      '                      WHERE NP.nf_status = ''N'''
+      '                        AND (NP.nf_id = C.pdc_nota_fiscal'
+      '                             OR NP.nf_pedido_compra = C.pdc_id))'
       ''
       '    UNION ALL'
       ''
@@ -789,6 +828,7 @@ object data: Tdata
       '      DVI.devi_quantidade AS QTD,'
       '      DVI.devi_un_venda AS UN,'
       '      DVI.devi_valor_unitario AS VR_UN,'
+      '      CAST(NULL AS NUMERIC(15,2)) AS CUSTO,'
       '      0.00 AS DESCONTO,'
       '      DVI.devi_valor_total AS TOTAL'
       '    FROM tb_devolucao_item DVI'
@@ -812,6 +852,7 @@ object data: Tdata
       '      OMI.ompi_quantidade AS QTD,'
       '      OMI.ompi_unidade AS UN,'
       '      OMI.ompi_valor_unitario AS VR_UN,'
+      '      CAST(NULL AS NUMERIC(15,2)) AS CUSTO,'
       '      0.00 AS DESCONTO,'
       '      OMI.ompi_valor_total AS TOTAL'
       '    FROM tb_outras_mov_item OMI'
@@ -820,8 +861,9 @@ object data: Tdata
       '    WHERE OMI.ompi_tipo_mov = ''E'''
       '    AND OMI.ompi_produto = :PRODUTO'
       ''
+      '  ) Y'
       ') X'
-      'ORDER BY X.EMISSAO DESC'
+      'ORDER BY X.EMISSAO DESC, X.NUMERO DESC'
     )
     Params = <    
       item
@@ -921,11 +963,36 @@ object data: Tdata
       MinValue = '0'
       Size = 10
     end
+    object qryComprasCUSTO: TZBCDField
+      DisplayLabel = 'R$ Custo'
+      FieldKind = fkData
+      FieldName = 'CUSTO'
+      Index = 7
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = False
+      Required = False
+      Precision = 15
+      Currency = True
+      MaxValue = 0
+      MinValue = 0
+    end
+    object qryComprasVARIACAO: TZRawStringField
+      DisplayLabel = 'Var.'
+      FieldKind = fkData
+      FieldName = 'VARIACAO'
+      Index = 8
+      LookupCache = False
+      ProviderFlags = [pfInUpdate, pfInWhere]
+      ReadOnly = True
+      Required = False
+      Size = 1
+    end
     object qryComprasDESCONTO: TZBCDField
       DisplayLabel = 'R$ Desconto'
       FieldKind = fkData
       FieldName = 'DESCONTO'
-      Index = 7
+      Index = 9
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
@@ -939,7 +1006,7 @@ object data: Tdata
       DisplayLabel = 'R$ Total'
       FieldKind = fkData
       FieldName = 'TOTAL'
-      Index = 8
+      Index = 10
       LookupCache = False
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False

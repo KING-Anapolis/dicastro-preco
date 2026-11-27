@@ -110,6 +110,9 @@ type
     procedure dbgVendasDrawColumnCell(Sender: TObject;
       const Rect: TRect; DataCol: Integer; Column: TColumn;
       State: TGridDrawState);
+    procedure dbgComprasDrawColumnCell(Sender: TObject;
+      const Rect: TRect; DataCol: Integer; Column: TColumn;
+      State: TGridDrawState);
     procedure dbgProdCompraKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
 
@@ -463,6 +466,13 @@ begin
       { arquivo antigo inválido: segue com o layout padrão }
     end;
   end;
+
+  { O aviso "No data found" do controller usa um contador interno que só é
+    recalculado ao filtrar; quando a consulta é reaberta ele fica defasado e
+    o aviso aparece por cima de produtos listados. Fica sempre desligado. }
+  if Assigned(dxDBGridController1) then
+    dxDBGridController1.ControllerOptions :=
+      dxDBGridController1.ControllerOptions - [coShowNoDataHint];
 
   FGrades.Ajustar(dbgProdutos);
   FConfiguracaoCarregada := True;
@@ -979,6 +989,10 @@ begin
     edtProdutoCompra.Hint := 'Sem % busca pelo início do nome. Use % como no SQL:' +
       LineEnding + '%café% (contém)  |  %café (termina com)  |  ca%fé';
   end;
+  { o tema liga o preenchimento automático; o gerenciador assume o controle }
+  FGrades.GradeRedimensionada(dbgProdutos);
+  FGrades.GradeRedimensionada(dbgCompras);
+  FGrades.GradeRedimensionada(dbgVendas);
   FUltimoProdutoVendas := -1;
   FUltimoProdutoCompras := -1;
 
@@ -1471,6 +1485,15 @@ begin
       EspacoEntreGrades, 104, Label13.Width, Label13.Height);
     Label12.SetBounds(MargemLateral + LarguraGrade +
       EspacoEntreGrades, TopoVendas - 16, Label12.Width, Label12.Height);
+  end;
+
+  { reestica a coluna principal só quando o ajuste automático está ligado
+    e o usuário não definiu larguras à mão }
+  if Assigned(FGrades) then
+  begin
+    FGrades.GradeRedimensionada(dbgProdutos);
+    FGrades.GradeRedimensionada(dbgCompras);
+    FGrades.GradeRedimensionada(dbgVendas);
   end;
 end;
 
@@ -2014,6 +2037,71 @@ begin
     Selo.Top + (Alt - Grade.Canvas.TextHeight(S)) div 2, S);
   Grade.Canvas.Brush.Style := bsSolid;
   Grade.Canvas.Font.Style := [];
+end;
+
+{ Custo do histórico de custos (com frete e custos adicionais). À esquerda da
+  célula, um indicador comparando com o custo da compra anterior:
+  seta vermelha para cima = subiu, seta verde para baixo = baixou,
+  traço cinza = igual. A primeira compra (sem anterior) fica sem indicador. }
+procedure Tfrm_p.dbgComprasDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn;
+  State: TGridDrawState);
+const
+  LADO = 9;   { largura da seta }
+  RECUO = 8;
+var
+  Grade: TCustomDBGrid;
+  Campo: TField;
+  Variacao: String;
+  Cor: TColor;
+  CX, CY, Meia: Integer;
+  DS: TDataSet;
+begin
+  Grade := Sender as TCustomDBGrid;
+  if not Assigned(Column) or not Assigned(Column.Field) then Exit;
+
+  PintarCelulaModerna(Grade, Rect, Column, State);
+  if not SameText(Column.FieldName, 'CUSTO') then Exit;
+
+  DS := Column.Field.DataSet;
+  if not Assigned(DS) or not DS.Active or DS.IsEmpty then Exit;
+  Campo := DS.FindField('VARIACAO');
+  if not Assigned(Campo) or Campo.IsNull then Exit;
+  Variacao := Trim(Campo.AsString);
+  if Variacao = '' then Exit;
+
+  if Variacao = 'S' then
+  begin
+    if TemaEscuro then Cor := RGBToColor(252, 129, 129)
+    else Cor := RGBToColor(200, 30, 30);
+  end
+  else if Variacao = 'D' then
+  begin
+    if TemaEscuro then Cor := RGBToColor(110, 231, 150)
+    else Cor := RGBToColor(22, 140, 60);
+  end
+  else
+    Cor := Paleta.TextoSuave;
+
+  CX := Rect.Left + RECUO + LADO div 2;
+  CY := Rect.Top + (Rect.Bottom - Rect.Top) div 2;
+  Meia := LADO div 2;
+
+  with Grade.Canvas do
+  begin
+    Brush.Style := bsSolid;
+    Brush.Color := Cor;
+    Pen.Color := Cor;
+    Pen.Width := 1;
+    if Variacao = 'S' then
+      Polygon([Point(CX - Meia - 1, CY + 3), Point(CX + Meia + 1, CY + 3),
+        Point(CX, CY - 4)])
+    else if Variacao = 'D' then
+      Polygon([Point(CX - Meia - 1, CY - 3), Point(CX + Meia + 1, CY - 3),
+        Point(CX, CY + 4)])
+    else
+      FillRect(Classes.Rect(CX - Meia, CY - 1, CX + Meia + 1, CY + 1));
+  end;
 end;
 
 procedure Tfrm_p.dbgProdCompraKeyDown(Sender: TObject; var Key: Word;

@@ -183,6 +183,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="uGradeExport"/>
       </Unit>
+      <Unit>
+        <Filename Value="ulembrarlogin.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uLembrarLogin"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

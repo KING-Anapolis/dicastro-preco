@@ -13,7 +13,7 @@ uses
   SysUtils, Forms, u_frm_login_teste, zcomponent, uDm, uFuncoes, uVar, uFrmMain, rxnew,
   uFrmCadastro, uGrupoEdit, uMarcaEdit, uSetorEdit, uSubGrupoEdit,
   printer4lazarus, datetimectrls, uConf, uTema, uIcones, uDarkStyleParams,
-  uMetaDarkStyle, uDarkStyleSchemes, uAtualiza, uInstancia
+  uMetaDarkStyle, uDarkStyleSchemes, uAtualiza, uInstancia, uLembrarLogin
   { you can add units after this };
 
 {$R *.res}

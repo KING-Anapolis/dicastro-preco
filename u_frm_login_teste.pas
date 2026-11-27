@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-Buttons, ColorSpeedButton, FileUtil, uFuncoes, uVar, uDm, uFrmMain, uAtualiza, uInstancia;
+Buttons, ColorSpeedButton, FileUtil, uFuncoes, uVar, uDm, uFrmMain, uAtualiza, uInstancia,
+uLembrarLogin;
 
 type
 
@@ -15,6 +16,7 @@ type
   Tfrm_login = class(TForm)
     btn_entrar: TColorSpeedButton;
     btn_sair: TColorSpeedButton;
+    ck_lembrar: TCheckBox;
     edt_senha: TEdit;
     edt_usuario: TEdit;
     img_login: TImage;
@@ -40,6 +42,7 @@ type
     procedure lb_sairClick(Sender: TObject);
   private
     procedure AutoFechar(Data: PtrInt);
+    function TentarLoginLembrado(AConectado: Boolean): Boolean;
 
   public
 
@@ -61,6 +64,8 @@ begin
 end;
 
 procedure Tfrm_login.FormShow(Sender: TObject);
+var
+  Conectado: Boolean;
 begin
   { Versão sempre igual à do executável (APP_VERSAO em uAtualiza). }
   Label2.Caption := 'Desenvolvido por Borges - www.borgis.com.br' + LineEnding +
@@ -97,7 +102,8 @@ begin
   end;
 
   uVar.CarregaVariaveis;
-  if uDm.data.ConectaDB then
+  Conectado := uDm.data.ConectaDB;
+  if Conectado then
   begin
     GravaLog('Banco de dados conectado com sucesso','INFO');
   end else
@@ -113,13 +119,56 @@ begin
 
   GravaLog('App iniciado com sucesso','INFO');
 
-  { Reabertura pedida pelo proprio programa (troca de tema): segue sem login. }
-  if ReaberturaValida then
+  { Reabertura pedida pelo proprio programa (troca de tema) ou login
+    lembrado válido: segue direto, sem mostrar a tela. }
+  if ReaberturaValida or TentarLoginLembrado(Conectado) then
   begin
     LoginConcluido := True;
     AlphaBlend := True;
     AlphaBlendValue := 0;
     Application.QueueAsyncCall(@AutoFechar, 0);
+  end;
+end;
+
+{ Entra sozinho com o último usuário quando "Lembrar" foi marcado. Se a senha
+  não confere mais (foi trocada) o lembrete é apagado e a tela é exibida com o
+  usuário já preenchido. }
+function Tfrm_login.TentarLoginLembrado(AConectado: Boolean): Boolean;
+var
+  Usuario, Senha: String;
+begin
+  Result := False;
+  ck_lembrar.Checked := False;
+  if UsuarioLembrado = '' then Exit;
+
+  if not LerLoginLembrado(Usuario, Senha) then
+  begin
+    { senha ilegível (outro usuário do Windows / outra máquina) }
+    edt_usuario.Text := UsuarioLembrado;
+    EsquecerLoginLembrado;
+    Exit;
+  end;
+
+  edt_usuario.Text := Usuario;
+  if not AConectado then Exit;
+
+  try
+    Result := uDm.data.UserLogin(Usuario, Senha);
+  except
+    on E: Exception do
+    begin
+      GravaLog('Falha no login automático: ' + E.Message, 'ERRO');
+      Result := False;
+    end;
+  end;
+
+  if Result then
+    GravaLog('Login automático do usuário lembrado: ' + Usuario, 'INFO')
+  else
+  begin
+    GravaLog('Login lembrado inválido para ' + Usuario +
+      '; voltando a pedir a senha.', 'AVISO');
+    EsquecerLoginLembrado;
   end;
 end;
 
@@ -158,6 +207,7 @@ begin
     );
   Exit;
   end;
+  GravarLoginLembrado(ck_lembrar.Checked, edt_usuario.Text, edt_senha.Text);
   LoginConcluido := True;
   Self.Close;
 end;
