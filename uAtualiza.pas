@@ -27,7 +27,7 @@ unit uAtualiza;
 interface
 
 const
-  APP_VERSAO = '3.0.4';
+  APP_VERSAO = '3.0.5';
   REPO_PADRAO = 'KING-Anapolis/dicastro-preco';
 
 var
@@ -741,12 +741,7 @@ end;
 function NovidadesDaVersao: string;
 begin
   Result :=
-    'Histórico de compras mostra o custo com frete e custos adicionais' + LineEnding +
-    'Setas indicam se o custo subiu, baixou ou ficou igual' + LineEnding +
-    'Compras feitas por pedido e nota agora aparecem no histórico' + LineEnding +
-    'Opção "Lembrar do último usuário" na tela de login' + LineEnding +
-    'Botão nas configurações para esquecer o login lembrado' + LineEnding +
-    'Colunas da grade de produtos podem ser redimensionadas livremente';
+    'Markup do histórico de vendas agora usa o custo registrado em cada venda';
 end;
 
 var
